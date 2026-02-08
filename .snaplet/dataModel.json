@@ -5852,6 +5852,34 @@
           "maxLength": null
         },
         {
+          "id": "public.tradition_date_rules.algorithm",
+          "name": "algorithm",
+          "columnName": "algorithm",
+          "type": "text",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.tradition_date_rules.frequency",
+          "name": "frequency",
+          "columnName": "frequency",
+          "type": "text",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
           "name": "traditions_tradition_date_rules_relative_tradition_idTotraditions",
           "type": "traditions",
           "isRequired": false,
@@ -5893,6 +5921,13 @@
           "name": "tradition_date_rules_pkey",
           "fields": [
             "id"
+          ],
+          "nullNotDistinct": false
+        },
+        {
+          "name": "tradition_date_rules_tradition_id_key",
+          "fields": [
+            "tradition_id"
           ],
           "nullNotDistinct": false
         }
@@ -5997,6 +6032,14 @@
           "name": "tradition_occurrences_pkey",
           "fields": [
             "id"
+          ],
+          "nullNotDistinct": false
+        },
+        {
+          "name": "tradition_occurrences_tradition_id_occurs_on_key",
+          "fields": [
+            "occurs_on",
+            "tradition_id"
           ],
           "nullNotDistinct": false
         }
