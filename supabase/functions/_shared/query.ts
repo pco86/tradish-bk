@@ -1,8 +1,8 @@
-import { supabase } from "./constants.ts";
+import { supabaseClient } from "./supabaseClient.ts";
 
 export async function getTradition() {
   try {
-    const { data, error } = await supabase.from("traditions").select("*");
+    const { data, error } = await supabaseClient.from("traditions").select("*");
 
     if (error) {
       throw error;
@@ -32,7 +32,7 @@ export async function getTradition() {
 
 export async function getTraditionById(id: string) {
   try {
-    const { data, error } = await supabase.from("traditions").select(
+    const { data, error } = await supabaseClient.from("traditions").select(
       `title, tradition_date_rules!tradition_date_rules_tradition_id_fkey (*)`,
     ).eq("id", id).limit(1).single();
 
@@ -69,7 +69,7 @@ export async function getTraditionById(id: string) {
 
 export async function getEaster() {
   try {
-    const { data, error } = await supabase.from("traditions").select(
+    const { data, error } = await supabaseClient.from("traditions").select(
       `title, tradition_date_rules!tradition_date_rules_tradition_id_fkey (*)`,
     ).eq("title", "Easter");
 
@@ -110,7 +110,7 @@ export async function getTraditionSet(
   today: string,
 ) {
   try {
-    const query = supabase
+    const query = supabaseClient
       .from("traditions")
       .select(
         `id,

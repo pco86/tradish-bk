@@ -1,4 +1,4 @@
-import { supabaseAdmin } from "./constants.ts";
+import { supabaseAdmin } from "./supabaseAdmin.ts";
 
 export async function addTraditionOccurrences(
   occurrences: { tradition_id: string; occurs_on: string }[],

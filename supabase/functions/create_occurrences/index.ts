@@ -4,31 +4,15 @@
 
 // Setup type definitions for built-in Supabase Runtime APIs
 import "@supabase/functions-js/edge-runtime.d.ts";
-// import { easter } from "@date-easter";
-import { helperFns, materializeOccurrences } from "./utils.ts";
-import { addTraditionOccurrences } from "./mutation.ts";
-import { getTraditionSet } from "./query.ts";
-// import { getEaster } from "./query.ts";
+import { helperFns, materializeOccurrences } from "../_shared/utils.ts";
+import { addTraditionOccurrences } from "../_shared/mutation.ts";
+import { getTraditionSet } from "../_shared/query.ts";
 
-Deno.serve(async (req) => {
-  const { name } = await req.json();
-  // const addEaster = easter(2018);
-
-  // const easterId = "fb6fc016-ef39-58ea-90a9-b5fad9f9cf4d";
+Deno.serve(async () => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const todayIso = today.toISOString().slice(0, 10);
 
-  console.log("Test");
-
-  // const getEaster = await materializeOccurrences(easterId, today, 4);
-
-  // const easterObject = getEaster.map((date) => ({
-  //   tradition_id: easterId,
-  //   occurs_on: date,
-  // }));
-
-  // addTraditionOccurrences(easterObject);
   let lastId = null;
 
   while (true) {
@@ -66,13 +50,11 @@ Deno.serve(async (req) => {
         occurrences.push({ tradition_id: tradition.id, occurs_on: date })
       );
     }
-    addTraditionOccurrences(occurrences);
+    await addTraditionOccurrences(occurrences);
   }
-  // const traditionSet = await getTraditionSet(100, null, todayIso);
-  // console.log(traditionSet);
 
   const data = {
-    message: `Hello ${name} Easter Year:!`,
+    message: `Function complete!`,
   };
 
   return new Response(
