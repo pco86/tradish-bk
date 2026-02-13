@@ -13,6 +13,13 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 
+CREATE EXTENSION IF NOT EXISTS "pg_cron" WITH SCHEMA "pg_catalog";
+
+
+
+
+
+
 CREATE EXTENSION IF NOT EXISTS "pg_net" WITH SCHEMA "extensions";
 
 
@@ -58,6 +65,81 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA "extensions";
 
 
 
+
+CREATE OR REPLACE FUNCTION "public"."excute_add_occurrences_new_tradition"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    AS $$
+DECLARE
+    webhook_url TEXT;
+    api_key TEXT;
+    -- Define other variables if needed
+BEGIN
+    -- Retrieve the secret values from the vault.decrypted_secrets view
+    SELECT decrypted_secret INTO webhook_url FROM vault.decrypted_secrets WHERE name = 'add_occurrences_new_tradition';
+    SELECT decrypted_secret INTO api_key FROM vault.decrypted_secrets WHERE name = 'webhook_secret';
+
+    IF webhook_url is null then
+        return null;
+    end if;
+
+    if api_key is null then
+        return null;
+    end if;
+
+    -- Perform the HTTP POST request using pg_net
+    -- The 'NEW' variable contains the new row data that triggered the action, used here as the body
+    PERFORM net.http_post(
+        url := webhook_url,
+        body := to_jsonb(NEW),
+        headers := jsonb_build_object(
+            'Content-Type', 'application/json',
+            'X-Webhook-Secret', 'Bearer ' || api_key
+        )
+    );
+
+    RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."excute_add_occurrences_new_tradition"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."schedule_occurrence_generation"() RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    AS $$
+DECLARE
+    webhook_url TEXT;
+    api_key TEXT;
+    -- Define other variables if needed
+BEGIN
+    -- Retrieve the secret values from the vault.decrypted_secrets view
+    SELECT decrypted_secret INTO webhook_url FROM vault.decrypted_secrets WHERE name = 'schedule_occurrence_generation';
+    SELECT decrypted_secret INTO api_key FROM vault.decrypted_secrets WHERE name = 'webhook_secret';
+
+    IF webhook_url is null then
+        return;
+    end if;
+
+    if api_key is null then
+        return;
+    end if;
+
+    -- Perform the HTTP POST request using pg_net
+    -- The 'NEW' variable contains the new row data that triggered the action, used here as the body
+    PERFORM net.http_post(
+        url := webhook_url,
+        headers := jsonb_build_object(
+            'Content-Type', 'application/json',
+            'X-Webhook-Secret', 'Bearer ' || api_key
+        )
+    );
+END;
+$$;
+
+
+ALTER FUNCTION "public"."schedule_occurrence_generation"() OWNER TO "postgres";
+
 SET default_tablespace = '';
 
 SET default_table_access_method = "heap";
@@ -67,7 +149,6 @@ CREATE TABLE IF NOT EXISTS "public"."tradition_date_rules" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "tradition_id" "uuid" NOT NULL,
     "calendar_type" "text",
-    "relative_offset" integer,
     "month" integer,
     "day" integer,
     "weekday" integer,
@@ -76,7 +157,14 @@ CREATE TABLE IF NOT EXISTS "public"."tradition_date_rules" (
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "relative_tradition_id" "uuid",
-    CONSTRAINT "tradition_date_rules_calendar_type_check" CHECK (("calendar_type" = ANY (ARRAY['gregorian'::"text", 'lunar'::"text", 'hebrew'::"text", 'islamic'::"text", 'chinese'::"text"])))
+    "operations" "text"[],
+    "rule_type" "text",
+    "algorithm" "text",
+    "frequency" "text",
+    CONSTRAINT "tradition_date_rules_algorithm_check" CHECK (("algorithm" = 'easter-western'::"text")),
+    CONSTRAINT "tradition_date_rules_calendar_type_check" CHECK (("calendar_type" = ANY (ARRAY['gregorian'::"text", 'lunar'::"text", 'hebrew'::"text", 'islamic'::"text", 'chinese'::"text"]))),
+    CONSTRAINT "tradition_date_rules_frequency_check" CHECK (("frequency" = ANY (ARRAY['weekly'::"text", 'monthly'::"text", 'yearly'::"text"]))),
+    CONSTRAINT "tradition_date_rules_rule_type_check" CHECK (("rule_type" = ANY (ARRAY['fixed'::"text", 'relative'::"text", 'computed'::"text", 'weekly'::"text"])))
 );
 
 
@@ -113,13 +201,27 @@ ALTER TABLE ONLY "public"."tradition_date_rules"
 
 
 
+ALTER TABLE ONLY "public"."tradition_date_rules"
+    ADD CONSTRAINT "tradition_date_rules_tradition_id_key" UNIQUE ("tradition_id");
+
+
+
 ALTER TABLE ONLY "public"."tradition_occurrences"
     ADD CONSTRAINT "tradition_occurrences_pkey" PRIMARY KEY ("id");
 
 
 
+ALTER TABLE ONLY "public"."tradition_occurrences"
+    ADD CONSTRAINT "tradition_occurrences_tradition_id_occurs_on_key" UNIQUE ("tradition_id", "occurs_on");
+
+
+
 ALTER TABLE ONLY "public"."traditions"
     ADD CONSTRAINT "traditions_pkey" PRIMARY KEY ("id");
+
+
+
+CREATE OR REPLACE TRIGGER "add_occurrences_new_tradition" AFTER INSERT ON "public"."tradition_date_rules" FOR EACH ROW EXECUTE FUNCTION "public"."excute_add_occurrences_new_tradition"();
 
 
 
@@ -135,6 +237,10 @@ ALTER TABLE ONLY "public"."tradition_date_rules"
 
 ALTER TABLE ONLY "public"."tradition_occurrences"
     ADD CONSTRAINT "tradition_occurrences_tradition_id_fkey" FOREIGN KEY ("tradition_id") REFERENCES "public"."traditions"("id") ON DELETE CASCADE;
+
+
+
+CREATE POLICY "Date Rules are viewable by everyone" ON "public"."tradition_date_rules" FOR SELECT TO "authenticated", "anon" USING (true);
 
 
 
@@ -158,6 +264,9 @@ ALTER TABLE "public"."traditions" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER PUBLICATION "supabase_realtime" OWNER TO "postgres";
+
+
+
 
 
 
@@ -317,6 +426,45 @@ GRANT USAGE ON SCHEMA "public" TO "service_role";
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+GRANT ALL ON FUNCTION "public"."excute_add_occurrences_new_tradition"() TO "anon";
+GRANT ALL ON FUNCTION "public"."excute_add_occurrences_new_tradition"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."excute_add_occurrences_new_tradition"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."schedule_occurrence_generation"() TO "anon";
+GRANT ALL ON FUNCTION "public"."schedule_occurrence_generation"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."schedule_occurrence_generation"() TO "service_role";
 
 
 

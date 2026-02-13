@@ -149,3 +149,41 @@ AFTER INSERT ON public.tradition_date_rules
 FOR EACH ROW
 EXECUTE FUNCTION excute_add_occurrences_new_tradition();
 
+
+CREATE OR REPLACE FUNCTION schedule_occurrence_generation()
+RETURNS void 
+LANGUAGE plpgsql
+SECURITY DEFINER -- Allows the function to run with the privileges of the user who created it (usually the database owner)
+AS $$
+DECLARE
+    webhook_url TEXT;
+    api_key TEXT;
+    -- Define other variables if needed
+BEGIN
+    -- Retrieve the secret values from the vault.decrypted_secrets view
+    SELECT decrypted_secret INTO webhook_url FROM vault.decrypted_secrets WHERE name = 'schedule_occurrence_generation';
+    SELECT decrypted_secret INTO api_key FROM vault.decrypted_secrets WHERE name = 'webhook_secret';
+
+    IF webhook_url is null then
+        return;
+    end if;
+
+    if api_key is null then
+        return;
+    end if;
+
+    -- Perform the HTTP POST request using pg_net
+    -- The 'NEW' variable contains the new row data that triggered the action, used here as the body
+    PERFORM net.http_post(
+        url := webhook_url,
+        headers := jsonb_build_object(
+            'Content-Type', 'application/json',
+            'X-Webhook-Secret', 'Bearer ' || api_key
+        )
+    );
+END;
+$$;
+
+CREATE EXTENSION IF NOT EXISTS pg_cron;
+
+select cron.schedule('schedule-materialization', '0 0 * * *', 'SELECT public.schedule_occurrence_generation()');

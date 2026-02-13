@@ -2,13 +2,17 @@
 
 ## Supabase
 
-npx supabase db diff -f desc
 npx supabase migration up
+npx supabase migration squash
+
+npx supabase db diff -f desc
 npx supabase db reset
-npx supabase functions serve name
-npx supabase gen types typescript --local > database.types.ts
+npx supabase db lint
 
 npx supabase functions new hello-world
+npx supabase functions serve name
+
+npx supabase gen types typescript --local > database.types.ts
 
 ## Snaplets
 
