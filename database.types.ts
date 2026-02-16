@@ -138,27 +138,33 @@ export type Database = {
       traditions: {
         Row: {
           created_at: string
+          created_by_user_id: string | null
           id: string
           long_description: string | null
           short_description: string | null
           title: string | null
           updated_at: string
+          visibility: string
         }
         Insert: {
           created_at?: string
+          created_by_user_id?: string | null
           id?: string
           long_description?: string | null
           short_description?: string | null
           title?: string | null
           updated_at?: string
+          visibility?: string
         }
         Update: {
           created_at?: string
+          created_by_user_id?: string | null
           id?: string
           long_description?: string | null
           short_description?: string | null
           title?: string | null
           updated_at?: string
+          visibility?: string
         }
         Relationships: []
       }
@@ -167,7 +173,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      schedule_occurrence_generation: { Args: never; Returns: undefined }
     }
     Enums: {
       [_ in never]: never

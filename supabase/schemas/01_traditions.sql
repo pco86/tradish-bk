@@ -4,8 +4,18 @@ create table traditions (
     short_description text,  
     long_description text,  
     created_at timestamptz not null default now (),  
+    visibility text not null check (visibility IN ('system', 'public', 'private')) default 'private',
+    created_by_user_id uuid REFERENCES auth.users(id) ON DELETE SET NULL,
     updated_at timestamptz not null default now ()  
 );  
+
+ALTER TABLE traditions
+ADD CONSTRAINT traditions_visibility_creator_check
+CHECK (
+  (visibility = 'system' AND created_by_user_id IS NULL)
+  OR
+  (visibility IN ('public','private') AND created_by_user_id IS NOT NULL)
+);
 
 create table tradition_date_rules (  
     id uuid primary key default gen_random_uuid (),  
@@ -37,6 +47,19 @@ create table tradition_occurrences (
     updated_at timestamptz not null default now ()  
 );  
 
+create table user_traditions (
+    user_id uuid not null references auth.users(id) on delete cascade,
+    tradition_id uuid not null references traditions (id) on delete cascade,
+    custom_title text,
+    notes text,
+    reminders_enabled boolean not null default true,
+    notification_time time,
+    created_at timestamptz default now(),
+    primary key (user_id, tradition_id)
+);
+
+create index on user_traditions(tradition_id);
+
 -- Enable Row Level Security
 alter table public.traditions
 enable row level security;
@@ -44,12 +67,53 @@ alter table public.tradition_occurrences
 enable row level security;
 alter table public.tradition_date_rules
 enable row level security;
+alter table public.user_traditions
+enable row level security;
 
 -- Policies for Traditions
-create policy "Traditions are viewable by everyone"
+create policy "Tradition selection rules"
 on traditions for select
 to authenticated, anon
-using ( true );
+using ( 
+    visibility in ('system', 'public')
+    OR
+    ((select auth.uid()) = created_by_user_id)
+);
+
+create policy "Users can insert public and private traditions"
+on traditions for insert
+with check (
+  visibility in ('public','private')
+  and ((select auth.uid()) = created_by_user_id)
+);
+
+create policy "Admin can insert any traditions"
+on traditions for insert
+to service_role
+with check (true);
+
+create policy "Creators can update their traditions"
+on traditions for update
+to authenticated
+using ((select auth.uid()) = created_by_user_id)
+with check ((select auth.uid()) = created_by_user_id);
+
+create policy "Admin can update any traditions"
+on traditions for update
+to service_role
+using (true)
+with check (true);
+
+create policy "Creators can delete their traditions"
+on traditions for delete
+to authenticated
+using ((select auth.uid()) = created_by_user_id);
+
+create policy "Admin can delete any traditions"
+on traditions for delete
+to service_role
+using (true);
+
 
 -- Policies for Tradition Occurrences
 create policy "Occurrences are viewable by everyone"
@@ -64,53 +128,32 @@ on tradition_date_rules for select
 to authenticated, anon
 using ( true );
 
--- TRIGGERS
--- CREATE OR REPLACE FUNCTION execute_webhook_with_secret()
--- RETURNS TRIGGER 
--- LANGUAGE plpgsql
--- SECURITY DEFINER -- Allows the function to run with the privileges of the user who created it (usually the database owner)
--- AS $$
--- DECLARE
---     webhook_url TEXT;
---     api_key TEXT;
---     -- Define other variables if needed
--- BEGIN
---     -- Retrieve the secret values from the vault.decrypted_secrets view
---     SELECT decrypted_secret INTO webhook_url FROM vault.decrypted_secrets WHERE name = 'webhook_url';
---     SELECT decrypted_secret INTO api_key FROM vault.decrypted_secrets WHERE name = 'webhook_secret';
+-- Polcies for User Traditions
+create policy "User traditions are viewable by owner"
+on user_traditions for select
+using ( (select auth.uid()) = user_id );
 
---     IF webhook_url is null then
---         return null;
---     end if;
+create policy "Users can create user traditions"
+on user_traditions for insert
+to authenticated
+with check ( (select auth.uid()) = user_id);
 
---     if api_key is null then
---         return null;
---     end if;
+create policy "Users can update user traditions"
+on user_traditions for update
+to authenticated
+using ((select auth.uid()) = user_id)
+with check ((select auth.uid()) = user_id);
 
---     -- Perform the HTTP POST request using pg_net
---     -- The 'NEW' variable contains the new row data that triggered the action, used here as the body
---     PERFORM net.http_post(
---         url := webhook_url,
---         body := to_jsonb(NEW),
---         headers := jsonb_build_object(
---             'Content-Type', 'application/json',
---             'X-Webhook-Secret', 'Bearer ' || api_key
---         )
---     );
-
---     RETURN NEW;
--- END;
--- $$;
-
--- CREATE TRIGGER hello_webhook
--- AFTER INSERT ON public.traditions 
--- FOR EACH ROW
--- EXECUTE FUNCTION execute_webhook_with_secret();
+create policy "Users can delete user traditions"
+on user_traditions for delete
+to authenticated
+using ((select auth.uid()) = user_id);
 
 CREATE OR REPLACE FUNCTION excute_add_occurrences_new_tradition()
 RETURNS TRIGGER 
 LANGUAGE plpgsql
 SECURITY DEFINER -- Allows the function to run with the privileges of the user who created it (usually the database owner)
+SET search_path = public
 AS $$
 DECLARE
     webhook_url TEXT;
@@ -154,6 +197,7 @@ CREATE OR REPLACE FUNCTION schedule_occurrence_generation()
 RETURNS void 
 LANGUAGE plpgsql
 SECURITY DEFINER -- Allows the function to run with the privileges of the user who created it (usually the database owner)
+SET search_path = public
 AS $$
 DECLARE
     webhook_url TEXT;
