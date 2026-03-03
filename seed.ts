@@ -34,6 +34,16 @@ const main = async () => {
         interval: null,
         relative_tradition_id: null,
       }],
+      tradition_prep_steps: [{
+        description: "Step 1 get ready",
+        sort_order: 0,
+      }, {
+        description: "Step 2 get ready",
+        sort_order: 1,
+      }, {
+        description: "Step 3 get ready",
+        sort_order: 2,
+      }],
     },
     {
       visibility: "system",
@@ -54,6 +64,16 @@ const main = async () => {
         week_of_month: null,
         interval: null,
         relative_tradition_id: null,
+      }],
+      tradition_prep_steps: [{
+        description: "Step 1 get ready",
+        sort_order: 0,
+      }, {
+        description: "Step 2 get ready",
+        sort_order: 1,
+      }, {
+        description: "Step 3 get ready",
+        sort_order: 2,
       }],
     },
     {
@@ -77,6 +97,16 @@ const main = async () => {
         interval: null,
         relative_tradition_id: null,
       }],
+      tradition_prep_steps: [{
+        description: "Step 1 get ready",
+        sort_order: 0,
+      }, {
+        description: "Step 2 get ready",
+        sort_order: 1,
+      }, {
+        description: "Step 3 get ready",
+        sort_order: 2,
+      }],
     },
     {
       visibility: "system",
@@ -98,6 +128,16 @@ const main = async () => {
         week_of_month: null,
         interval: null,
         relative_tradition_id: null,
+      }],
+      tradition_prep_steps: [{
+        description: "Step 1 get ready",
+        sort_order: 0,
+      }, {
+        description: "Step 2 get ready",
+        sort_order: 1,
+      }, {
+        description: "Step 3 get ready",
+        sort_order: 2,
       }],
     },
     {
@@ -121,6 +161,16 @@ const main = async () => {
         interval: null,
         relative_tradition_id: null,
       }],
+      tradition_prep_steps: [{
+        description: "Step 1 get ready",
+        sort_order: 0,
+      }, {
+        description: "Step 2 get ready",
+        sort_order: 1,
+      }, {
+        description: "Step 3 get ready",
+        sort_order: 2,
+      }],
     },
     {
       visibility: "system",
@@ -143,6 +193,16 @@ const main = async () => {
         interval: null,
         relative_tradition_id: null,
       }],
+      tradition_prep_steps: [{
+        description: "Step 1 get ready",
+        sort_order: 0,
+      }, {
+        description: "Step 2 get ready",
+        sort_order: 1,
+      }, {
+        description: "Step 3 get ready",
+        sort_order: 2,
+      }],
     },
     {
       visibility: "system",
@@ -163,6 +223,16 @@ const main = async () => {
         week_of_month: null,
         interval: null,
         relative_tradition_id: null,
+      }],
+      tradition_prep_steps: [{
+        description: "Step 1 get ready",
+        sort_order: 0,
+      }, {
+        description: "Step 2 get ready",
+        sort_order: 1,
+      }, {
+        description: "Step 3 get ready",
+        sort_order: 2,
       }],
     },
     {
@@ -186,6 +256,16 @@ const main = async () => {
         interval: null,
         relative_tradition_id: null,
       }],
+      tradition_prep_steps: [{
+        description: "Step 1 get ready",
+        sort_order: 0,
+      }, {
+        description: "Step 2 get ready",
+        sort_order: 1,
+      }, {
+        description: "Step 3 get ready",
+        sort_order: 2,
+      }],
     },
   ]);
 
@@ -198,6 +278,16 @@ const main = async () => {
         "The commemoration of Jesus' triumphal entry into Jerusalem.",
       long_description:
         "The [beginning of Holy Week](https://libguides.asu.edu), recalled with the blessing of palm branches to signify the crowds who welcomed Jesus.",
+      tradition_prep_steps: [{
+        description: "Step 1 get ready",
+        sort_order: 0,
+      }, {
+        description: "Step 2 get ready",
+        sort_order: 1,
+      }, {
+        description: "Step 3 get ready",
+        sort_order: 2,
+      }],
     },
     {
       visibility: "system",
@@ -220,6 +310,16 @@ const main = async () => {
         interval: null,
         relative_tradition_id: null,
       }],
+      tradition_prep_steps: [{
+        description: "Step 1 get ready",
+        sort_order: 0,
+      }, {
+        description: "Step 2 get ready",
+        sort_order: 1,
+      }, {
+        description: "Step 3 get ready",
+        sort_order: 2,
+      }],
     },
     {
       visibility: "system",
@@ -228,6 +328,16 @@ const main = async () => {
       short_description: "Celebrates Jesus Christ ascending into heaven.",
       long_description:
         "Occurring 40 days after the Resurrection, this feast marks the moment [Jesus ascended bodily into heaven](https://www.christianity.com) in the presence of His apostles.",
+      tradition_prep_steps: [{
+        description: "Step 1 get ready",
+        sort_order: 0,
+      }, {
+        description: "Step 2 get ready",
+        sort_order: 1,
+      }, {
+        description: "Step 3 get ready",
+        sort_order: 2,
+      }],
     },
     {
       visibility: "system",
@@ -236,6 +346,16 @@ const main = async () => {
       short_description: "The descent of the Holy Spirit upon the Apostles.",
       long_description:
         "Celebrated 50 days after Easter, it commemorates the [Holy Spirit coming to the disciples](https://libguides.asu.edu) as 'tongues of fire,' marking the birth of the Church.",
+      tradition_prep_steps: [{
+        description: "Step 1 get ready",
+        sort_order: 0,
+      }, {
+        description: "Step 2 get ready",
+        sort_order: 1,
+      }, {
+        description: "Step 3 get ready",
+        sort_order: 2,
+      }],
     },
     {
       visibility: "system",
@@ -258,6 +378,16 @@ const main = async () => {
         interval: null,
         relative_tradition_id: null,
       }],
+      tradition_prep_steps: [{
+        description: "Step 1 get ready",
+        sort_order: 0,
+      }, {
+        description: "Step 2 get ready",
+        sort_order: 1,
+      }, {
+        description: "Step 3 get ready",
+        sort_order: 2,
+      }],
     },
     {
       visibility: "system",
@@ -267,6 +397,16 @@ const main = async () => {
         "The Solemnity of the Most Holy Body and Blood of Christ.",
       long_description:
         "A feast honoring the real presence of the [body and blood of Jesus](https://github.com) in the Eucharist, traditionally celebrated after Trinity Sunday.",
+      tradition_prep_steps: [{
+        description: "Step 1 get ready",
+        sort_order: 0,
+      }, {
+        description: "Step 2 get ready",
+        sort_order: 1,
+      }, {
+        description: "Step 3 get ready",
+        sort_order: 2,
+      }],
     },
     {
       visibility: "system",
@@ -276,6 +416,16 @@ const main = async () => {
         "The beginning of the liturgical year and a season of preparation.",
       long_description:
         "Marks the start of the [Advent season](https://www.usccb.org worship/liturgical-year/advent), a time of expectant waiting and preparation for both the celebration of the Nativity of Christ at Christmas and the return of Christ at the Second Coming.",
+      tradition_prep_steps: [{
+        description: "Step 1 get ready",
+        sort_order: 0,
+      }, {
+        description: "Step 2 get ready",
+        sort_order: 1,
+      }, {
+        description: "Step 3 get ready",
+        sort_order: 2,
+      }],
     },
     {
       visibility: "system",
@@ -284,6 +434,16 @@ const main = async () => {
       short_description: "Honors Jesus Christ as Lord of all creation.",
       long_description:
         "The final Sunday of the [liturgical year](https://www.facebook.com), emphasizing Christ's sovereignty over the universe.",
+      tradition_prep_steps: [{
+        description: "Step 1 get ready",
+        sort_order: 0,
+      }, {
+        description: "Step 2 get ready",
+        sort_order: 1,
+      }, {
+        description: "Step 3 get ready",
+        sort_order: 2,
+      }],
     },
     {
       visibility: "system",
@@ -293,6 +453,16 @@ const main = async () => {
         "Sunday of the Dead; a German Protestant day of remembrance.",
       long_description:
         "The last Sunday before Advent in German Lutheran traditions, dedicated to [remembering those who have died](https://www.christianity.com) in the past year.",
+      tradition_prep_steps: [{
+        description: "Step 1 get ready",
+        sort_order: 0,
+      }, {
+        description: "Step 2 get ready",
+        sort_order: 1,
+      }, {
+        description: "Step 3 get ready",
+        sort_order: 2,
+      }],
     },
   ]);
 

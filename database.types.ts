@@ -135,38 +135,217 @@ export type Database = {
           },
         ]
       }
+      tradition_prep_steps: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          sort_order: number
+          tradition_id: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          sort_order: number
+          tradition_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          sort_order?: number
+          tradition_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tradition_prep_steps_tradition_id_fkey"
+            columns: ["tradition_id"]
+            isOneToOne: false
+            referencedRelation: "traditions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       traditions: {
         Row: {
           created_at: string
-          created_by_user_id: string | null
+          deleted_at: string | null
           id: string
           long_description: string | null
           short_description: string | null
-          title: string | null
+          title: string
           updated_at: string
+          user_id: string | null
+          version: number | null
           visibility: string
         }
         Insert: {
           created_at?: string
-          created_by_user_id?: string | null
+          deleted_at?: string | null
           id?: string
           long_description?: string | null
           short_description?: string | null
-          title?: string | null
+          title: string
           updated_at?: string
+          user_id?: string | null
+          version?: number | null
           visibility?: string
         }
         Update: {
           created_at?: string
-          created_by_user_id?: string | null
+          deleted_at?: string | null
           id?: string
           long_description?: string | null
           short_description?: string | null
-          title?: string | null
+          title?: string
           updated_at?: string
+          user_id?: string | null
+          version?: number | null
           visibility?: string
         }
         Relationships: []
+      }
+      user_steps_complete: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          id: string
+          is_completed: boolean
+          occurrence_id: string
+          updated_at: string
+          user_step_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          is_completed?: boolean
+          occurrence_id: string
+          updated_at?: string
+          user_step_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          is_completed?: boolean
+          occurrence_id?: string
+          updated_at?: string
+          user_step_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_steps_complete_occurrence_id_fkey"
+            columns: ["occurrence_id"]
+            isOneToOne: false
+            referencedRelation: "tradition_occurrences"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_steps_complete_user_step_id_fkey"
+            columns: ["user_step_id"]
+            isOneToOne: false
+            referencedRelation: "user_tradition_prep_steps"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_tradition_prep_steps: {
+        Row: {
+          created_at: string
+          custom_description: string | null
+          id: string
+          is_removed: boolean
+          sort_order: number
+          tradition_prep_step_id: string | null
+          user_tradition_id: string
+        }
+        Insert: {
+          created_at?: string
+          custom_description?: string | null
+          id?: string
+          is_removed?: boolean
+          sort_order: number
+          tradition_prep_step_id?: string | null
+          user_tradition_id: string
+        }
+        Update: {
+          created_at?: string
+          custom_description?: string | null
+          id?: string
+          is_removed?: boolean
+          sort_order?: number
+          tradition_prep_step_id?: string | null
+          user_tradition_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_tradition_prep_steps_tradition_prep_step_id_fkey"
+            columns: ["tradition_prep_step_id"]
+            isOneToOne: false
+            referencedRelation: "tradition_prep_steps"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_tradition_prep_steps_user_tradition_id_fkey"
+            columns: ["user_tradition_id"]
+            isOneToOne: false
+            referencedRelation: "user_traditions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_tradition_prep_steps_user_tradition_id_fkey1"
+            columns: ["user_tradition_id"]
+            isOneToOne: false
+            referencedRelation: "user_traditions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_traditions: {
+        Row: {
+          created_at: string | null
+          custom_title: string | null
+          id: string
+          is_favorite: boolean
+          notes: string | null
+          notification_time: string | null
+          reminders_enabled: boolean
+          tradition_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          custom_title?: string | null
+          id?: string
+          is_favorite?: boolean
+          notes?: string | null
+          notification_time?: string | null
+          reminders_enabled?: boolean
+          tradition_id: string
+          user_id?: string
+        }
+        Update: {
+          created_at?: string | null
+          custom_title?: string | null
+          id?: string
+          is_favorite?: boolean
+          notes?: string | null
+          notification_time?: string | null
+          reminders_enabled?: boolean
+          tradition_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_traditions_tradition_id_fkey"
+            columns: ["tradition_id"]
+            isOneToOne: false
+            referencedRelation: "traditions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
