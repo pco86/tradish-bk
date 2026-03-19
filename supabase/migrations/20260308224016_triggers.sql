@@ -1,0 +1,1 @@
+DROP TRIGGER IF EXISTS "copy_steps_trigger" ON "public"."user_traditions";

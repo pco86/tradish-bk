@@ -6434,6 +6434,52 @@
           "maxLength": null
         },
         {
+          "id": "public.tradition_prep_steps.user_id",
+          "name": "user_id",
+          "columnName": "user_id",
+          "type": "uuid",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.tradition_prep_steps.step_type",
+          "name": "step_type",
+          "columnName": "step_type",
+          "type": "text",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "name": "users",
+          "type": "users",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "tradition_prep_stepsTousers",
+          "relationFromFields": [
+            "user_id"
+          ],
+          "relationToFields": [
+            "id"
+          ],
+          "isList": false,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
           "name": "traditions",
           "type": "traditions",
           "isRequired": true,
@@ -6471,14 +6517,6 @@
           "name": "tradition_prep_steps_pkey",
           "fields": [
             "id"
-          ],
-          "nullNotDistinct": false
-        },
-        {
-          "name": "tradition_prep_steps_tradition_id_sort_order_key",
-          "fields": [
-            "sort_order",
-            "tradition_id"
           ],
           "nullNotDistinct": false
         }
@@ -6611,15 +6649,29 @@
           "isList": false,
           "isGenerated": false,
           "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.traditions.notes",
+          "name": "notes",
+          "columnName": "notes",
+          "type": "text",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
           "hasDefaultValue": false,
           "isId": false,
           "maxLength": null
         },
         {
-          "id": "public.traditions.version",
-          "name": "version",
-          "columnName": "version",
-          "type": "int4",
+          "id": "public.traditions.parent_tradition_id",
+          "name": "parent_tradition_id",
+          "columnName": "parent_tradition_id",
+          "type": "uuid",
           "isRequired": false,
           "kind": "scalar",
           "isList": false,
@@ -6637,6 +6689,24 @@
           "relationName": "traditionsTousers",
           "relationFromFields": [
             "user_id"
+          ],
+          "relationToFields": [
+            "id"
+          ],
+          "isList": false,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "traditions",
+          "type": "traditions",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "traditionsTotraditions",
+          "relationFromFields": [
+            "parent_tradition_id"
           ],
           "relationToFields": [
             "id"
@@ -6695,6 +6765,20 @@
           "isRequired": false,
           "kind": "object",
           "relationName": "tradition_prep_stepsTotraditions",
+          "relationFromFields": [],
+          "relationToFields": [],
+          "isList": true,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "traditions",
+          "type": "traditions",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "traditionsTotraditions",
           "relationFromFields": [],
           "relationToFields": [],
           "isList": true,
@@ -7065,6 +7149,14 @@
             "id"
           ],
           "nullNotDistinct": false
+        },
+        {
+          "name": "user_tradition_prep_steps_user_tradition_id_tradition_prep__key",
+          "fields": [
+            "tradition_prep_step_id",
+            "user_tradition_id"
+          ],
+          "nullNotDistinct": false
         }
       ]
     },
@@ -7092,34 +7184,6 @@
           "name": "tradition_id",
           "columnName": "tradition_id",
           "type": "uuid",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "public.user_traditions.custom_title",
-          "name": "custom_title",
-          "columnName": "custom_title",
-          "type": "text",
-          "isRequired": false,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "public.user_traditions.notes",
-          "name": "notes",
-          "columnName": "notes",
-          "type": "text",
           "isRequired": false,
           "kind": "scalar",
           "isList": false,
@@ -7186,20 +7250,6 @@
           "maxLength": null
         },
         {
-          "id": "public.user_traditions.is_favorite",
-          "name": "is_favorite",
-          "columnName": "is_favorite",
-          "type": "bool",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": true,
-          "isId": false,
-          "maxLength": null
-        },
-        {
           "name": "users",
           "type": "users",
           "isRequired": true,
@@ -7220,7 +7270,7 @@
         {
           "name": "traditions",
           "type": "traditions",
-          "isRequired": true,
+          "isRequired": false,
           "kind": "object",
           "relationName": "user_traditionsTotraditions",
           "relationFromFields": [
@@ -7853,6 +7903,20 @@
           "isRequired": false,
           "kind": "object",
           "relationName": "sessionsTousers",
+          "relationFromFields": [],
+          "relationToFields": [],
+          "isList": true,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "tradition_prep_steps",
+          "type": "tradition_prep_steps",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "tradition_prep_stepsTousers",
           "relationFromFields": [],
           "relationToFields": [],
           "isList": true,

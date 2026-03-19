@@ -16,7 +16,7 @@ const main = async () => {
   await seed.traditions([
     {
       visibility: "system",
-      created_by_user_id: null,
+      user_id: null,
       title: "Solemnity of Mary, Mother of God",
       short_description: "A celebration of Mary's motherhood of Jesus.",
       long_description:
@@ -37,17 +37,20 @@ const main = async () => {
       tradition_prep_steps: [{
         description: "Step 1 get ready",
         sort_order: 0,
+        step_type: "default",
       }, {
         description: "Step 2 get ready",
         sort_order: 1,
+        step_type: "default",
       }, {
         description: "Step 3 get ready",
         sort_order: 2,
+        step_type: "default",
       }],
     },
     {
       visibility: "system",
-      created_by_user_id: null,
+      user_id: null,
       title: "Epiphany of the Lord",
       short_description: "Commemorates the revelation of Christ to the world.",
       long_description:
@@ -68,17 +71,20 @@ const main = async () => {
       tradition_prep_steps: [{
         description: "Step 1 get ready",
         sort_order: 0,
+        step_type: "default",
       }, {
         description: "Step 2 get ready",
         sort_order: 1,
+        step_type: "default",
       }, {
         description: "Step 3 get ready",
         sort_order: 2,
+        step_type: "default",
       }],
     },
     {
       visibility: "system",
-      created_by_user_id: null,
+      user_id: null,
       title: "Feast of the Transfiguration",
       short_description:
         "Commemorates Jesus' radiant appearance on Mount Tabor.",
@@ -100,17 +106,20 @@ const main = async () => {
       tradition_prep_steps: [{
         description: "Step 1 get ready",
         sort_order: 0,
+        step_type: "default",
       }, {
         description: "Step 2 get ready",
         sort_order: 1,
+        step_type: "default",
       }, {
         description: "Step 3 get ready",
         sort_order: 2,
+        step_type: "default",
       }],
     },
     {
       visibility: "system",
-      created_by_user_id: null,
+      user_id: null,
       title: "Feast of the Assumption",
       short_description:
         "Celebrates Mary being taken body and soul into heaven.",
@@ -132,17 +141,20 @@ const main = async () => {
       tradition_prep_steps: [{
         description: "Step 1 get ready",
         sort_order: 0,
+        step_type: "default",
       }, {
         description: "Step 2 get ready",
         sort_order: 1,
+        step_type: "default",
       }, {
         description: "Step 3 get ready",
         sort_order: 2,
+        step_type: "default",
       }],
     },
     {
       visibility: "system",
-      created_by_user_id: null,
+      user_id: null,
       title: "The Exaltation of the Holy Cross",
       short_description:
         "Also known as Holy Rood Day, honoring the Cross of Christ.",
@@ -164,17 +176,20 @@ const main = async () => {
       tradition_prep_steps: [{
         description: "Step 1 get ready",
         sort_order: 0,
+        step_type: "default",
       }, {
         description: "Step 2 get ready",
         sort_order: 1,
+        step_type: "default",
       }, {
         description: "Step 3 get ready",
         sort_order: 2,
+        step_type: "default",
       }],
     },
     {
       visibility: "system",
-      created_by_user_id: null,
+      user_id: null,
       title: "Reformation Day",
       short_description:
         "Commemorates the start of the Protestant Reformation.",
@@ -196,17 +211,20 @@ const main = async () => {
       tradition_prep_steps: [{
         description: "Step 1 get ready",
         sort_order: 0,
+        step_type: "default",
       }, {
         description: "Step 2 get ready",
         sort_order: 1,
+        step_type: "default",
       }, {
         description: "Step 3 get ready",
         sort_order: 2,
+        step_type: "default",
       }],
     },
     {
       visibility: "system",
-      created_by_user_id: null,
+      user_id: null,
       title: "All Saints' Day",
       short_description: "Honoring all saints, known and unknown.",
       long_description:
@@ -227,17 +245,20 @@ const main = async () => {
       tradition_prep_steps: [{
         description: "Step 1 get ready",
         sort_order: 0,
+        step_type: "default",
       }, {
         description: "Step 2 get ready",
         sort_order: 1,
+        step_type: "default",
       }, {
         description: "Step 3 get ready",
         sort_order: 2,
+        step_type: "default",
       }],
     },
     {
       visibility: "system",
-      created_by_user_id: null,
+      user_id: null,
       title: "Feast of the Immaculate Conception",
       short_description:
         "Celebrates Mary being conceived without original sin.",
@@ -259,12 +280,15 @@ const main = async () => {
       tradition_prep_steps: [{
         description: "Step 1 get ready",
         sort_order: 0,
+        step_type: "default",
       }, {
         description: "Step 2 get ready",
         sort_order: 1,
+        step_type: "default",
       }, {
         description: "Step 3 get ready",
         sort_order: 2,
+        step_type: "default",
       }],
     },
   ]);
@@ -272,7 +296,7 @@ const main = async () => {
   const relationTraditions = await seed.traditions([
     {
       visibility: "system",
-      created_by_user_id: null,
+      user_id: null,
       title: "Palm Sunday",
       short_description:
         "The commemoration of Jesus' triumphal entry into Jerusalem.",
@@ -281,17 +305,20 @@ const main = async () => {
       tradition_prep_steps: [{
         description: "Step 1 get ready",
         sort_order: 0,
+        step_type: "default",
       }, {
         description: "Step 2 get ready",
         sort_order: 1,
+        step_type: "default",
       }, {
         description: "Step 3 get ready",
         sort_order: 2,
+        step_type: "default",
       }],
     },
     {
       visibility: "system",
-      created_by_user_id: null,
+      user_id: null,
       title: "Easter",
       short_description:
         "The celebration of the Passion, Death, and Resurrection of Jesus.",
@@ -313,17 +340,20 @@ const main = async () => {
       tradition_prep_steps: [{
         description: "Step 1 get ready",
         sort_order: 0,
+        step_type: "default",
       }, {
         description: "Step 2 get ready",
         sort_order: 1,
+        step_type: "default",
       }, {
         description: "Step 3 get ready",
         sort_order: 2,
+        step_type: "default",
       }],
     },
     {
       visibility: "system",
-      created_by_user_id: null,
+      user_id: null,
       title: "Feast of the Ascension",
       short_description: "Celebrates Jesus Christ ascending into heaven.",
       long_description:
@@ -331,17 +361,20 @@ const main = async () => {
       tradition_prep_steps: [{
         description: "Step 1 get ready",
         sort_order: 0,
+        step_type: "default",
       }, {
         description: "Step 2 get ready",
         sort_order: 1,
+        step_type: "default",
       }, {
         description: "Step 3 get ready",
         sort_order: 2,
+        step_type: "default",
       }],
     },
     {
       visibility: "system",
-      created_by_user_id: null,
+      user_id: null,
       title: "Pentecost",
       short_description: "The descent of the Holy Spirit upon the Apostles.",
       long_description:
@@ -349,17 +382,20 @@ const main = async () => {
       tradition_prep_steps: [{
         description: "Step 1 get ready",
         sort_order: 0,
+        step_type: "default",
       }, {
         description: "Step 2 get ready",
         sort_order: 1,
+        step_type: "default",
       }, {
         description: "Step 3 get ready",
         sort_order: 2,
+        step_type: "default",
       }],
     },
     {
       visibility: "system",
-      created_by_user_id: null,
+      user_id: null,
       title: "Christmas",
       short_description:
         "The Nativity of Jesus Christ and the beginning of Christmastide.",
@@ -381,17 +417,20 @@ const main = async () => {
       tradition_prep_steps: [{
         description: "Step 1 get ready",
         sort_order: 0,
+        step_type: "default",
       }, {
         description: "Step 2 get ready",
         sort_order: 1,
+        step_type: "default",
       }, {
         description: "Step 3 get ready",
         sort_order: 2,
+        step_type: "default",
       }],
     },
     {
       visibility: "system",
-      created_by_user_id: null,
+      user_id: null,
       title: "Feast of Corpus Christi",
       short_description:
         "The Solemnity of the Most Holy Body and Blood of Christ.",
@@ -400,17 +439,20 @@ const main = async () => {
       tradition_prep_steps: [{
         description: "Step 1 get ready",
         sort_order: 0,
+        step_type: "default",
       }, {
         description: "Step 2 get ready",
         sort_order: 1,
+        step_type: "default",
       }, {
         description: "Step 3 get ready",
         sort_order: 2,
+        step_type: "default",
       }],
     },
     {
       visibility: "system",
-      created_by_user_id: null,
+      user_id: null,
       title: "First Sunday of Advent",
       short_description:
         "The beginning of the liturgical year and a season of preparation.",
@@ -419,17 +461,20 @@ const main = async () => {
       tradition_prep_steps: [{
         description: "Step 1 get ready",
         sort_order: 0,
+        step_type: "default",
       }, {
         description: "Step 2 get ready",
         sort_order: 1,
+        step_type: "default",
       }, {
         description: "Step 3 get ready",
         sort_order: 2,
+        step_type: "default",
       }],
     },
     {
       visibility: "system",
-      created_by_user_id: null,
+      user_id: null,
       title: "Solemnity of Christ the King",
       short_description: "Honors Jesus Christ as Lord of all creation.",
       long_description:
@@ -437,17 +482,20 @@ const main = async () => {
       tradition_prep_steps: [{
         description: "Step 1 get ready",
         sort_order: 0,
+        step_type: "default",
       }, {
         description: "Step 2 get ready",
         sort_order: 1,
+        step_type: "default",
       }, {
         description: "Step 3 get ready",
         sort_order: 2,
+        step_type: "default",
       }],
     },
     {
       visibility: "system",
-      created_by_user_id: null,
+      user_id: null,
       title: "Totensonntag",
       short_description:
         "Sunday of the Dead; a German Protestant day of remembrance.",
@@ -456,12 +504,15 @@ const main = async () => {
       tradition_prep_steps: [{
         description: "Step 1 get ready",
         sort_order: 0,
+        step_type: "default",
       }, {
         description: "Step 2 get ready",
         sort_order: 1,
+        step_type: "default",
       }, {
         description: "Step 3 get ready",
         sort_order: 2,
+        step_type: "default",
       }],
     },
   ]);

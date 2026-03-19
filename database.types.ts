@@ -173,6 +173,7 @@ export type Database = {
           deleted_at: string | null
           id: string
           long_description: string | null
+          notes: string | null
           short_description: string | null
           title: string
           updated_at: string
@@ -185,6 +186,7 @@ export type Database = {
           deleted_at?: string | null
           id?: string
           long_description?: string | null
+          notes?: string | null
           short_description?: string | null
           title: string
           updated_at?: string
@@ -197,6 +199,7 @@ export type Database = {
           deleted_at?: string | null
           id?: string
           long_description?: string | null
+          notes?: string | null
           short_description?: string | null
           title?: string
           updated_at?: string
@@ -306,38 +309,39 @@ export type Database = {
       user_traditions: {
         Row: {
           created_at: string | null
-          custom_title: string | null
           id: string
-          is_favorite: boolean
-          notes: string | null
           notification_time: string | null
+          parent_tradition_id: string | null
           reminders_enabled: boolean
-          tradition_id: string
+          tradition_id: string | null
           user_id: string
         }
         Insert: {
           created_at?: string | null
-          custom_title?: string | null
           id?: string
-          is_favorite?: boolean
-          notes?: string | null
           notification_time?: string | null
+          parent_tradition_id?: string | null
           reminders_enabled?: boolean
-          tradition_id: string
+          tradition_id?: string | null
           user_id?: string
         }
         Update: {
           created_at?: string | null
-          custom_title?: string | null
           id?: string
-          is_favorite?: boolean
-          notes?: string | null
           notification_time?: string | null
+          parent_tradition_id?: string | null
           reminders_enabled?: boolean
-          tradition_id?: string
+          tradition_id?: string | null
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "user_traditions_parent_tradition_id_fkey"
+            columns: ["parent_tradition_id"]
+            isOneToOne: false
+            referencedRelation: "traditions"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "user_traditions_tradition_id_fkey"
             columns: ["tradition_id"]

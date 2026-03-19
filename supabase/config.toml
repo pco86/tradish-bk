@@ -426,3 +426,14 @@ entrypoint = "./functions/schedule-occurrence-materialization/index.ts"
 # Specifies static files to be bundled with the function. Supports glob patterns.
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/schedule-occurrence-materialization/*.html" ]
+
+[functions.update-occurrences]
+enabled = true
+verify_jwt = true
+import_map = "./functions/update-occurrences/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/update-occurrences/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/update-occurrences/*.html" ]

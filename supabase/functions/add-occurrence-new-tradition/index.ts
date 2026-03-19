@@ -6,7 +6,10 @@
 import "@supabase/functions-js/edge-runtime.d.ts";
 import { Tables } from "../../../database.types.ts";
 import { materializeOccurrences } from "../_shared/utils.ts";
-import { addTraditionOccurrences } from "../_shared/mutation.ts";
+import {
+  deleteTraditionOccurrences,
+  upsertTraditionOccurrences,
+} from "../_shared/mutation.ts";
 
 console.log("Hello from Functions!");
 
@@ -34,13 +37,15 @@ Deno.serve(async (req) => {
     4,
   );
 
+  await deleteTraditionOccurrences(tradition_date_rules.tradition_id);
+
   const occurrences: { tradition_id: string; occurs_on: string }[] =
     occurrenceDates.map((date) => ({
       tradition_id: tradition_date_rules.tradition_id,
       occurs_on: date,
     }));
 
-  await addTraditionOccurrences(occurrences);
+  await upsertTraditionOccurrences(occurrences);
 
   console.log("Success, Function Complete");
 

@@ -1,0 +1,91 @@
+-- CREATE TABLE user_tradition_prep_steps (
+--     id uuid PRIMARY KEY DEFAULT gen_random_uuid (),
+--     user_tradition_id uuid NOT NULL REFERENCES user_traditions (id) ON DELETE CASCADE,
+--     FOREIGN KEY (user_tradition_id) REFERENCES user_traditions (id) ON DELETE CASCADE,
+--     tradition_prep_step_id uuid REFERENCES tradition_prep_steps (id) ON DELETE CASCADE,
+--     -- custom_title text,
+--     custom_description text,
+--     -- custom_offset_days integer,
+--     is_removed boolean NOT NULL DEFAULT false,
+--     sort_order integer NOT NULL,
+--     created_at timestamptz NOT NULL DEFAULT NOW(),
+--     UNIQUE (user_tradition_id, tradition_prep_step_id)
+-- );
+-- ALTER TABLE
+--     public.user_tradition_prep_steps enable ROW LEVEL SECURITY;
+-- -- Polcies for User Tradition Prep Steps
+-- CREATE policy "User tradition prep steps are viewable by owner" ON user_tradition_prep_steps FOR
+-- SELECT
+--     USING (
+--         EXISTS (
+--             SELECT
+--                 1
+--             FROM
+--                 user_traditions ut
+--             WHERE
+--                 ut.id = user_tradition_prep_steps.user_tradition_id
+--                 AND ut.user_id = (
+--                     SELECT
+--                         auth.uid ()
+--                 )
+--         )
+--     );
+-- CREATE policy "Users can create user tradition prep steps" ON user_tradition_prep_steps FOR
+-- INSERT
+--     TO authenticated WITH CHECK (
+--         EXISTS (
+--             SELECT
+--                 1
+--             FROM
+--                 user_traditions ut
+--             WHERE
+--                 ut.id = user_tradition_prep_steps.user_tradition_id
+--                 AND ut.user_id = (
+--                     SELECT
+--                         auth.uid ()
+--                 )
+--         )
+--     );
+-- CREATE policy "Users can update user tradition prep steps" ON user_tradition_prep_steps FOR
+-- UPDATE
+--     TO authenticated USING (
+--         EXISTS (
+--             SELECT
+--                 1
+--             FROM
+--                 user_traditions ut
+--             WHERE
+--                 ut.id = user_tradition_prep_steps.user_tradition_id
+--                 AND ut.user_id = (
+--                     SELECT
+--                         auth.uid ()
+--                 )
+--         )
+--     ) WITH CHECK (
+--         EXISTS (
+--             SELECT
+--                 1
+--             FROM
+--                 user_traditions ut
+--             WHERE
+--                 ut.id = user_tradition_prep_steps.user_tradition_id
+--                 AND ut.user_id = (
+--                     SELECT
+--                         auth.uid ()
+--                 )
+--         )
+--     );
+-- CREATE policy "Users can delete user tradition prep steps" ON user_tradition_prep_steps FOR DELETE TO authenticated USING (
+--     EXISTS (
+--         SELECT
+--             1
+--         FROM
+--             user_traditions ut
+--         WHERE
+--             ut.id = user_tradition_prep_steps.user_tradition_id
+--             AND ut.user_id = (
+--                 SELECT
+--                     auth.uid ()
+--             )
+--     )
+-- );
