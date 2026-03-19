@@ -93,7 +93,7 @@ Restrictive:
 - [x] Delete:
   - Your steps only.
 
-## Prep Step Completion
+## User Steps Complete
 
 - [x] Insert:
   - Viewable Steps Only.
