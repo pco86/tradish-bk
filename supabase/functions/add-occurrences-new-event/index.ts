@@ -5,10 +5,10 @@
 // Setup type definitions for built-in Supabase Runtime APIs
 import "@supabase/functions-js/edge-runtime.d.ts";
 import { Tables } from "../../../database.types.ts";
-import { materializeOccurrences } from "../_shared/utils.ts";
+import { materializeEventOccurrences } from "../_shared/utils.ts";
 import {
-  deleteTraditionOccurrences,
-  upsertTraditionOccurrences,
+  deleteEventOccurrences,
+  upsertEventOccurrences,
 } from "../_shared/mutation.ts";
 
 Deno.serve(async (req) => {
@@ -20,30 +20,30 @@ Deno.serve(async (req) => {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const tradition_date_rules: Tables<"tradition_date_rules"> = await req.json();
+  const event_date_rules: Tables<"event_date_rules"> = await req.json();
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  if (tradition_date_rules === null) {
-    console.error(`Missing tradition rule`);
-    return new Response("Missing Tradition Rule.");
+  if (event_date_rules === null) {
+    console.error(`Missing event rule`);
+    return new Response("Missing Event Rule.");
   }
-  const occurrenceDates = await materializeOccurrences(
-    tradition_date_rules,
+  const occurrenceDates = await materializeEventOccurrences(
+    event_date_rules,
     today,
     4,
   );
 
-  await deleteTraditionOccurrences(tradition_date_rules.tradition_id);
+  await deleteEventOccurrences(event_date_rules.event_id);
 
-  const occurrences: { tradition_id: string; occurs_on: string }[] =
-    occurrenceDates.map((date) => ({
-      tradition_id: tradition_date_rules.tradition_id,
+  const occurrences: { event_id: string; occurs_on: string }[] = occurrenceDates
+    .map((date) => ({
+      event_id: event_date_rules.event_id,
       occurs_on: date,
     }));
 
-  await upsertTraditionOccurrences(occurrences);
+  await upsertEventOccurrences(occurrences);
 
   console.log("Success, Function Complete");
 
@@ -62,7 +62,7 @@ Deno.serve(async (req) => {
   1. Run `supabase start` (see: https://supabase.com/docs/reference/cli/supabase-start)
   2. Make an HTTP request:
 
-  curl -i --location --request POST 'http://127.0.0.1:54321/functions/v1/add-occurrence-new-tradition' \
+  curl -i --location --request POST 'http://127.0.0.1:54321/functions/v1/add-occurrences-new-event' \
     --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0' \
     --header 'Content-Type: application/json' \
     --data '{"name":"Functions"}'

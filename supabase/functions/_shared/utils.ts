@@ -1,9 +1,9 @@
 import { easter } from "@date-easter";
-import { getTraditionById } from "./query.ts";
+import { getEventRuleById, getTraditionById } from "./query.ts";
 import { Tables } from "../../../database.types.ts";
 
 export const resolveFixed = (
-  rule: Tables<"tradition_date_rules">,
+  rule: Tables<"tradition_date_rules"> | Tables<"event_date_rules">,
   fromDate: Date,
 ) => {
   const year = fromDate.getFullYear();
@@ -33,7 +33,7 @@ const computedRuleHandler: Record<string, ComputedRuleHandler> = {
 };
 
 export const resolveComputed = (
-  rule: Tables<"tradition_date_rules">,
+  rule: Tables<"tradition_date_rules"> | Tables<"event_date_rules">,
   date: Date,
 ) => {
   const handler = computedRuleHandler[rule.algorithm ? rule.algorithm : ""];
@@ -59,6 +59,19 @@ export const getRuleForTradition = async (traditionId: string) => {
   }
 
   return rule.tradition_date_rules;
+};
+
+export const getRuleForEvent = async (eventId: string) => {
+  const rule = await getEventRuleById(eventId);
+
+  if (rule instanceof Response || rule === null) {
+    console.error(
+      `Create Occurrence Edge Function: Get Tradition By ID response error.`,
+    );
+    return null;
+  }
+
+  return rule;
 };
 
 const addDays = (date: Date, days: number) => {
@@ -197,6 +210,68 @@ export const applyOperation = (date: Date, op: string) => {
   return handler(date, args);
 };
 
+export const resolveEventRule = async (
+  rule: Tables<"event_date_rules">,
+  fromDate: Date,
+  visited: Set<string>,
+): Promise<Date | null> => {
+  if (visited.has(rule.event_id)) {
+    console.error(
+      `Create Occurrence Edge Function: Circular event dependency detected: ${rule.event_id}`,
+    );
+  }
+
+  visited.add(rule.event_id);
+
+  let date: Date | null;
+
+  switch (rule.rule_type) {
+    case "fixed":
+      date = resolveFixed(rule, fromDate);
+      break;
+
+    case "computed":
+      date = resolveComputed(rule, fromDate);
+      break;
+
+    case "relative": {
+      if (!rule.relative_event_id) {
+        console.error(
+          `Create Occurrences: Relative rule missing for this event's rule: ${rule.event_id}`,
+        );
+        date = null;
+        break;
+      }
+      const relativeRule = await getRuleForEvent(
+        rule.relative_event_id,
+      );
+      if (relativeRule === null) return null;
+      date = await resolveEventRule(
+        relativeRule,
+        fromDate,
+        visited,
+      );
+      break;
+    }
+
+    default:
+      console.error(`Create Occurrences: Unknown rule_type: ${rule.rule_type}`);
+      date = null;
+  }
+
+  if (date === null) return null;
+
+  for (const op of rule.operations ?? []) {
+    if (date === null) continue;
+    const newDate = applyOperation(date, op);
+    if (newDate instanceof Date) date = newDate;
+  }
+
+  visited.delete(rule.event_id);
+
+  return date;
+};
+
 export const resolveRule = async (
   rule: Tables<"tradition_date_rules">,
   fromDate: Date,
@@ -261,7 +336,7 @@ export const resolveRule = async (
 
 function advanceByFrequency(
   date: Date,
-  rule: Tables<"tradition_date_rules">,
+  rule: Tables<"tradition_date_rules"> | Tables<"event_date_rules">,
   count: number,
 ) {
   const d = new Date(date);
@@ -304,6 +379,28 @@ export async function materializeOccurrences(
     );
     if (traditionDate === null) continue;
     occurrences.push(traditionDate.toISOString().slice(0, 10));
+  }
+
+  return occurrences;
+}
+
+export async function materializeEventOccurrences(
+  rule: Tables<"event_date_rules">,
+  fromDate: Date,
+  count: number,
+) {
+  const occurrences = [];
+
+  for (let i = 0; i < count; i++) {
+    const nextDate = advanceByFrequency(fromDate, rule, i);
+
+    const eventDate = await resolveEventRule(
+      rule,
+      nextDate,
+      new Set<string>(),
+    );
+    if (eventDate === null) continue;
+    occurrences.push(eventDate.toISOString().slice(0, 10));
   }
 
   return occurrences;

@@ -9,6 +9,11 @@ select vault.create_secret(
 );
 
 select vault.create_secret(
+  'http://host.docker.internal:54321/functions/v1/add-occurrences-new-event',
+  'add_occurrences_new_event'
+);
+
+select vault.create_secret(
   'http://host.docker.internal:54321/functions/v1/schedule-occurrence-materialization',
   'schedule_occurrence_generation'
 );

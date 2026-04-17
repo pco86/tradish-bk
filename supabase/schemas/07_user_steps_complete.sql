@@ -5,11 +5,11 @@ CREATE TABLE
         FOREIGN KEY (occurrence_id) REFERENCES tradition_occurrences (id) ON DELETE CASCADE,
         step_id UUID NOT NULL,
         FOREIGN KEY (step_id) REFERENCES tradition_prep_steps (id) ON DELETE CASCADE,
-        is_completed BOOLEAN NOT NULL DEFAULT TRUE,
+        is_complete BOOLEAN NOT NULL DEFAULT TRUE,
         created_at timestamptz NOT NULL DEFAULT NOW(),
         updated_at timestamptz NOT NULL DEFAULT NOW(),
-        user_id UUID REFERENCES auth.users (id) ON DELETE SET NULL DEFAULT auth.uid (),
-        UNIQUE (occurrence_id, step_id)
+        user_id UUID NOT NULL REFERENCES auth.users (id) ON DELETE CASCADE DEFAULT auth.uid (),
+        UNIQUE (occurrence_id, step_id, user_id)
     );
 
 ALTER TABLE public.user_steps_complete ENABLE ROW LEVEL SECURITY;

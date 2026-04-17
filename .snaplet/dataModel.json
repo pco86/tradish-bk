@@ -630,6 +630,589 @@
       ],
       "uniqueConstraints": []
     },
+    "event_date_rules": {
+      "id": "public.event_date_rules",
+      "schemaName": "public",
+      "tableName": "event_date_rules",
+      "fields": [
+        {
+          "id": "public.event_date_rules.id",
+          "name": "id",
+          "columnName": "id",
+          "type": "uuid",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": true,
+          "maxLength": null
+        },
+        {
+          "id": "public.event_date_rules.event_id",
+          "name": "event_id",
+          "columnName": "event_id",
+          "type": "uuid",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.event_date_rules.rule_type",
+          "name": "rule_type",
+          "columnName": "rule_type",
+          "type": "text",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.event_date_rules.algorithm",
+          "name": "algorithm",
+          "columnName": "algorithm",
+          "type": "text",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.event_date_rules.frequency",
+          "name": "frequency",
+          "columnName": "frequency",
+          "type": "text",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.event_date_rules.operations",
+          "name": "operations",
+          "columnName": "operations",
+          "type": "text[]",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.event_date_rules.calendar_type",
+          "name": "calendar_type",
+          "columnName": "calendar_type",
+          "type": "text",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.event_date_rules.relative_event_id",
+          "name": "relative_event_id",
+          "columnName": "relative_event_id",
+          "type": "uuid",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.event_date_rules.month",
+          "name": "month",
+          "columnName": "month",
+          "type": "int4",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.event_date_rules.day",
+          "name": "day",
+          "columnName": "day",
+          "type": "int4",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.event_date_rules.weekday",
+          "name": "weekday",
+          "columnName": "weekday",
+          "type": "int4",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.event_date_rules.week_of_month",
+          "name": "week_of_month",
+          "columnName": "week_of_month",
+          "type": "int4",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.event_date_rules.interval",
+          "name": "interval",
+          "columnName": "interval",
+          "type": "int4",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.event_date_rules.created_at",
+          "name": "created_at",
+          "columnName": "created_at",
+          "type": "timestamptz",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.event_date_rules.updated_at",
+          "name": "updated_at",
+          "columnName": "updated_at",
+          "type": "timestamptz",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "name": "events_event_date_rules_event_idToevents",
+          "type": "events",
+          "isRequired": true,
+          "kind": "object",
+          "relationName": "event_date_rules_event_idToevents",
+          "relationFromFields": [
+            "event_id"
+          ],
+          "relationToFields": [
+            "id"
+          ],
+          "isList": false,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "events_event_date_rules_relative_event_idToevents",
+          "type": "events",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "event_date_rules_relative_event_idToevents",
+          "relationFromFields": [
+            "relative_event_id"
+          ],
+          "relationToFields": [
+            "id"
+          ],
+          "isList": false,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        }
+      ],
+      "uniqueConstraints": [
+        {
+          "name": "event_date_rules_event_id_key",
+          "fields": [
+            "event_id"
+          ],
+          "nullNotDistinct": false
+        },
+        {
+          "name": "event_date_rules_pkey",
+          "fields": [
+            "id"
+          ],
+          "nullNotDistinct": false
+        }
+      ]
+    },
+    "event_occurrences": {
+      "id": "public.event_occurrences",
+      "schemaName": "public",
+      "tableName": "event_occurrences",
+      "fields": [
+        {
+          "id": "public.event_occurrences.id",
+          "name": "id",
+          "columnName": "id",
+          "type": "uuid",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": true,
+          "maxLength": null
+        },
+        {
+          "id": "public.event_occurrences.event_id",
+          "name": "event_id",
+          "columnName": "event_id",
+          "type": "uuid",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.event_occurrences.occurs_on",
+          "name": "occurs_on",
+          "columnName": "occurs_on",
+          "type": "text",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.event_occurrences.created_at",
+          "name": "created_at",
+          "columnName": "created_at",
+          "type": "timestamptz",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.event_occurrences.updated_at",
+          "name": "updated_at",
+          "columnName": "updated_at",
+          "type": "timestamptz",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "name": "events",
+          "type": "events",
+          "isRequired": true,
+          "kind": "object",
+          "relationName": "event_occurrencesToevents",
+          "relationFromFields": [
+            "event_id"
+          ],
+          "relationToFields": [
+            "id"
+          ],
+          "isList": false,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        }
+      ],
+      "uniqueConstraints": [
+        {
+          "name": "event_occurrences_event_id_occurs_on_key",
+          "fields": [
+            "event_id",
+            "occurs_on"
+          ],
+          "nullNotDistinct": false
+        },
+        {
+          "name": "event_occurrences_pkey",
+          "fields": [
+            "id"
+          ],
+          "nullNotDistinct": false
+        }
+      ]
+    },
+    "events": {
+      "id": "public.events",
+      "schemaName": "public",
+      "tableName": "events",
+      "fields": [
+        {
+          "id": "public.events.id",
+          "name": "id",
+          "columnName": "id",
+          "type": "uuid",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": true,
+          "maxLength": null
+        },
+        {
+          "id": "public.events.user_id",
+          "name": "user_id",
+          "columnName": "user_id",
+          "type": "uuid",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.events.title",
+          "name": "title",
+          "columnName": "title",
+          "type": "text",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.events.visibility",
+          "name": "visibility",
+          "columnName": "visibility",
+          "type": "text",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.events.created_at",
+          "name": "created_at",
+          "columnName": "created_at",
+          "type": "timestamptz",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.events.updated_at",
+          "name": "updated_at",
+          "columnName": "updated_at",
+          "type": "timestamptz",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.events.deleted_at",
+          "name": "deleted_at",
+          "columnName": "deleted_at",
+          "type": "timestamptz",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.events.long_description",
+          "name": "long_description",
+          "columnName": "long_description",
+          "type": "text",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.events.short_description",
+          "name": "short_description",
+          "columnName": "short_description",
+          "type": "text",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "name": "users",
+          "type": "users",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "eventsTousers",
+          "relationFromFields": [
+            "user_id"
+          ],
+          "relationToFields": [
+            "id"
+          ],
+          "isList": false,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "event_date_rules_event_date_rules_event_idToevents",
+          "type": "event_date_rules",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "event_date_rules_event_idToevents",
+          "relationFromFields": [],
+          "relationToFields": [],
+          "isList": true,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "event_date_rules_event_date_rules_relative_event_idToevents",
+          "type": "event_date_rules",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "event_date_rules_relative_event_idToevents",
+          "relationFromFields": [],
+          "relationToFields": [],
+          "isList": true,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "event_occurrences",
+          "type": "event_occurrences",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "event_occurrencesToevents",
+          "relationFromFields": [],
+          "relationToFields": [],
+          "isList": true,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        }
+      ],
+      "uniqueConstraints": [
+        {
+          "name": "events_pkey",
+          "fields": [
+            "id"
+          ],
+          "nullNotDistinct": false
+        }
+      ]
+    },
     "extensions": {
       "id": "_realtime.extensions",
       "schemaName": "_realtime",
@@ -6006,7 +6589,7 @@
           "isList": false,
           "isGenerated": false,
           "sequence": false,
-          "hasDefaultValue": false,
+          "hasDefaultValue": true,
           "isId": false,
           "maxLength": null
         },
@@ -6462,6 +7045,20 @@
           "maxLength": null
         },
         {
+          "id": "public.tradition_prep_steps.parent_step_id",
+          "name": "parent_step_id",
+          "columnName": "parent_step_id",
+          "type": "uuid",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
           "name": "users",
           "type": "users",
           "isRequired": false,
@@ -6469,6 +7066,24 @@
           "relationName": "tradition_prep_stepsTousers",
           "relationFromFields": [
             "user_id"
+          ],
+          "relationToFields": [
+            "id"
+          ],
+          "isList": false,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "tradition_prep_steps",
+          "type": "tradition_prep_steps",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "tradition_prep_stepsTotradition_prep_steps",
+          "relationFromFields": [
+            "parent_step_id"
           ],
           "relationToFields": [
             "id"
@@ -6498,11 +7113,25 @@
           "hasDefaultValue": false
         },
         {
-          "name": "user_tradition_prep_steps",
-          "type": "user_tradition_prep_steps",
+          "name": "tradition_prep_steps",
+          "type": "tradition_prep_steps",
           "isRequired": false,
           "kind": "object",
-          "relationName": "user_tradition_prep_stepsTotradition_prep_steps",
+          "relationName": "tradition_prep_stepsTotradition_prep_steps",
+          "relationFromFields": [],
+          "relationToFields": [],
+          "isList": true,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "user_steps_complete",
+          "type": "user_steps_complete",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "user_steps_completeTotradition_prep_steps",
           "relationFromFields": [],
           "relationToFields": [],
           "isList": true,
@@ -6846,48 +7475,6 @@
           "maxLength": null
         },
         {
-          "id": "public.user_steps_complete.user_step_id",
-          "name": "user_step_id",
-          "columnName": "user_step_id",
-          "type": "uuid",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "public.user_steps_complete.is_completed",
-          "name": "is_completed",
-          "columnName": "is_completed",
-          "type": "bool",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": true,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "public.user_steps_complete.completed_at",
-          "name": "completed_at",
-          "columnName": "completed_at",
-          "type": "timestamptz",
-          "isRequired": false,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
           "id": "public.user_steps_complete.created_at",
           "name": "created_at",
           "columnName": "created_at",
@@ -6916,6 +7503,66 @@
           "maxLength": null
         },
         {
+          "id": "public.user_steps_complete.step_id",
+          "name": "step_id",
+          "columnName": "step_id",
+          "type": "uuid",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.user_steps_complete.user_id",
+          "name": "user_id",
+          "columnName": "user_id",
+          "type": "uuid",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.user_steps_complete.is_complete",
+          "name": "is_complete",
+          "columnName": "is_complete",
+          "type": "bool",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "name": "users",
+          "type": "users",
+          "isRequired": true,
+          "kind": "object",
+          "relationName": "user_steps_completeTousers",
+          "relationFromFields": [
+            "user_id"
+          ],
+          "relationToFields": [
+            "id"
+          ],
+          "isList": false,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
           "name": "tradition_occurrences",
           "type": "tradition_occurrences",
           "isRequired": true,
@@ -6934,13 +7581,13 @@
           "hasDefaultValue": false
         },
         {
-          "name": "user_tradition_prep_steps",
-          "type": "user_tradition_prep_steps",
+          "name": "tradition_prep_steps",
+          "type": "tradition_prep_steps",
           "isRequired": true,
           "kind": "object",
-          "relationName": "user_steps_completeTouser_tradition_prep_steps",
+          "relationName": "user_steps_completeTotradition_prep_steps",
           "relationFromFields": [
-            "user_step_id"
+            "step_id"
           ],
           "relationToFields": [
             "id"
@@ -6954,10 +7601,11 @@
       ],
       "uniqueConstraints": [
         {
-          "name": "user_steps_complete_occurrence_id_user_step_id_key",
+          "name": "user_steps_complete_occurrence_id_step_id_user_id_key",
           "fields": [
             "occurrence_id",
-            "user_step_id"
+            "step_id",
+            "user_id"
           ],
           "nullNotDistinct": false
         },
@@ -6965,196 +7613,6 @@
           "name": "user_steps_complete_pkey",
           "fields": [
             "id"
-          ],
-          "nullNotDistinct": false
-        }
-      ]
-    },
-    "user_tradition_prep_steps": {
-      "id": "public.user_tradition_prep_steps",
-      "schemaName": "public",
-      "tableName": "user_tradition_prep_steps",
-      "fields": [
-        {
-          "id": "public.user_tradition_prep_steps.id",
-          "name": "id",
-          "columnName": "id",
-          "type": "uuid",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": true,
-          "isId": true,
-          "maxLength": null
-        },
-        {
-          "id": "public.user_tradition_prep_steps.user_tradition_id",
-          "name": "user_tradition_id",
-          "columnName": "user_tradition_id",
-          "type": "uuid",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "public.user_tradition_prep_steps.tradition_prep_step_id",
-          "name": "tradition_prep_step_id",
-          "columnName": "tradition_prep_step_id",
-          "type": "uuid",
-          "isRequired": false,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "public.user_tradition_prep_steps.custom_description",
-          "name": "custom_description",
-          "columnName": "custom_description",
-          "type": "text",
-          "isRequired": false,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "public.user_tradition_prep_steps.is_removed",
-          "name": "is_removed",
-          "columnName": "is_removed",
-          "type": "bool",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": true,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "public.user_tradition_prep_steps.sort_order",
-          "name": "sort_order",
-          "columnName": "sort_order",
-          "type": "int4",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "public.user_tradition_prep_steps.created_at",
-          "name": "created_at",
-          "columnName": "created_at",
-          "type": "timestamptz",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": true,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "name": "tradition_prep_steps",
-          "type": "tradition_prep_steps",
-          "isRequired": false,
-          "kind": "object",
-          "relationName": "user_tradition_prep_stepsTotradition_prep_steps",
-          "relationFromFields": [
-            "tradition_prep_step_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
-          "isList": false,
-          "isId": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false
-        },
-        {
-          "name": "user_traditions_user_tradition_prep_steps_user_tradition_idTouser_traditions",
-          "type": "user_traditions",
-          "isRequired": true,
-          "kind": "object",
-          "relationName": "user_tradition_prep_steps_user_tradition_idTouser_traditions",
-          "relationFromFields": [
-            "user_tradition_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
-          "isList": false,
-          "isId": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false
-        },
-        {
-          "name": "user_traditions_user_tradition_prep_steps_user_tradition_idTouser_traditions",
-          "type": "user_traditions",
-          "isRequired": true,
-          "kind": "object",
-          "relationName": "user_tradition_prep_steps_user_tradition_idTouser_traditions",
-          "relationFromFields": [
-            "user_tradition_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
-          "isList": false,
-          "isId": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false
-        },
-        {
-          "name": "user_steps_complete",
-          "type": "user_steps_complete",
-          "isRequired": false,
-          "kind": "object",
-          "relationName": "user_steps_completeTouser_tradition_prep_steps",
-          "relationFromFields": [],
-          "relationToFields": [],
-          "isList": true,
-          "isId": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false
-        }
-      ],
-      "uniqueConstraints": [
-        {
-          "name": "user_tradition_prep_steps_pkey",
-          "fields": [
-            "id"
-          ],
-          "nullNotDistinct": false
-        },
-        {
-          "name": "user_tradition_prep_steps_user_tradition_id_tradition_prep__key",
-          "fields": [
-            "tradition_prep_step_id",
-            "user_tradition_id"
           ],
           "nullNotDistinct": false
         }
@@ -7280,34 +7738,6 @@
             "id"
           ],
           "isList": false,
-          "isId": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false
-        },
-        {
-          "name": "user_tradition_prep_steps_user_tradition_prep_steps_user_tradition_idTouser_traditions",
-          "type": "user_tradition_prep_steps",
-          "isRequired": false,
-          "kind": "object",
-          "relationName": "user_tradition_prep_steps_user_tradition_idTouser_traditions",
-          "relationFromFields": [],
-          "relationToFields": [],
-          "isList": true,
-          "isId": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false
-        },
-        {
-          "name": "user_tradition_prep_steps_user_tradition_prep_steps_user_tradition_idTouser_traditions",
-          "type": "user_tradition_prep_steps",
-          "isRequired": false,
-          "kind": "object",
-          "relationName": "user_tradition_prep_steps_user_tradition_idTouser_traditions",
-          "relationFromFields": [],
-          "relationToFields": [],
-          "isList": true,
           "isId": false,
           "isGenerated": false,
           "sequence": false,
@@ -7912,6 +8342,20 @@
           "hasDefaultValue": false
         },
         {
+          "name": "events",
+          "type": "events",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "eventsTousers",
+          "relationFromFields": [],
+          "relationToFields": [],
+          "isList": true,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
           "name": "tradition_prep_steps",
           "type": "tradition_prep_steps",
           "isRequired": false,
@@ -7931,6 +8375,20 @@
           "isRequired": false,
           "kind": "object",
           "relationName": "traditionsTousers",
+          "relationFromFields": [],
+          "relationToFields": [],
+          "isList": true,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "user_steps_complete",
+          "type": "user_steps_complete",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "user_steps_completeTousers",
           "relationFromFields": [],
           "relationToFields": [],
           "isList": true,

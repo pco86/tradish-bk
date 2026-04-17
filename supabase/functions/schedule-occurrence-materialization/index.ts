@@ -4,14 +4,63 @@
 
 // Setup type definitions for built-in Supabase Runtime APIs
 import "@supabase/functions-js/edge-runtime.d.ts";
-import { helperFns, materializeOccurrences } from "../_shared/utils.ts";
-import { addTraditionOccurrences } from "../_shared/mutation.ts";
-import { getTraditionSet } from "../_shared/query.ts";
+import {
+  helperFns,
+  materializeEventOccurrences,
+  materializeOccurrences,
+} from "../_shared/utils.ts";
+import {
+  addEventOccurrences,
+  addTraditionOccurrences,
+} from "../_shared/mutation.ts";
+import { getEventSet, getTraditionSet } from "../_shared/query.ts";
 
 Deno.serve(async () => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const todayIso = today.toISOString().slice(0, 10);
+
+  let eventLastId = null;
+
+  while (true) {
+    const event_occurrences: { event_id: string; occurs_on: string }[] = [];
+    const data = await getEventSet(100, eventLastId, todayIso);
+
+    if (data instanceof Response) {
+      console.log(data);
+      break;
+    }
+
+    if (!data.length) break;
+
+    for (const event of data) {
+      eventLastId = event.id;
+      if (event.event_occurrences.length >= 4) continue;
+      if (event.event_date_rules === null) {
+        console.error(`Missing tradition rule for ${event.id}`);
+        continue;
+      }
+      const occurrenceDates = await materializeEventOccurrences(
+        event.event_date_rules,
+        today,
+        4,
+      );
+      const existingDates = event.event_occurrences.map((item) =>
+        item.occurs_on ? item.occurs_on : ""
+      );
+      const newDates = helperFns.processDissimilarStringArrays(
+        occurrenceDates,
+        existingDates,
+      );
+      if (newDates.length === 0) continue;
+      newDates.forEach(
+        (date) => {
+          event_occurrences.push({ event_id: event.id, occurs_on: date });
+        },
+      );
+    }
+    await addEventOccurrences(event_occurrences);
+  }
 
   let lastId = null;
 
@@ -46,8 +95,10 @@ Deno.serve(async () => {
         existingDates,
       );
       if (newDates.length === 0) continue;
-      newDates.forEach((date) =>
-        occurrences.push({ tradition_id: tradition.id, occurs_on: date })
+      newDates.forEach(
+        (date) => {
+          occurrences.push({ tradition_id: tradition.id, occurs_on: date });
+        },
       );
     }
     await addTraditionOccurrences(occurrences);

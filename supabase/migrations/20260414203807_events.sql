@@ -1,0 +1,62 @@
+set check_function_bodies = off;
+
+CREATE OR REPLACE FUNCTION public.excute_add_occurrences_new_event()
+ RETURNS trigger
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO 'public'
+AS $function$ 
+DECLARE 
+    webhook_url TEXT;
+    api_key TEXT;
+-- Define other variables if needed
+BEGIN 
+    -- Retrieve the secret values from the vault.decrypted_secrets view
+    SELECT decrypted_secret INTO webhook_url FROM vault.decrypted_secrets
+    WHERE name = 'add_occurrences_new_event';
+    SELECT decrypted_secret INTO api_key FROM vault.decrypted_secrets
+    WHERE name = 'webhook_secret';
+    
+    IF webhook_url IS NULL THEN 
+        RETURN NULL;
+    END IF;
+    IF api_key IS NULL THEN 
+        RETURN NULL;
+    END IF;
+    -- Perform the HTTP POST request using pg_net
+    -- The 'NEW' variable contains the new row data that triggered the action, used here as the body
+    -- This triggers an edge function which creates the occurrences in the db.
+    PERFORM net.http_post(
+        url := webhook_url,
+        body := to_jsonb(NEW),
+        headers := jsonb_build_object(
+            'Content-Type',
+            'application/json',
+            'X-Webhook-Secret',
+            'Bearer ' || api_key
+        )
+    );
+    RETURN NEW;
+END;
+$function$
+;
+
+CREATE OR REPLACE FUNCTION public.set_updated_at()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$ 
+    
+    BEGIN new.updated_at = NOW();
+    RETURN new;
+
+END;
+$function$
+;
+
+CREATE TRIGGER add_occurrences_new_event AFTER INSERT ON public.event_date_rules FOR EACH ROW EXECUTE FUNCTION public.excute_add_occurrences_new_event();
+
+CREATE TRIGGER upsert_occurrences_update_event AFTER UPDATE ON public.event_date_rules FOR EACH ROW EXECUTE FUNCTION public.excute_add_occurrences_new_event();
+
+CREATE TRIGGER events_updated BEFORE UPDATE ON public.events FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+
+

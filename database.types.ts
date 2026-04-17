@@ -34,6 +34,143 @@ export type Database = {
   }
   public: {
     Tables: {
+      event_date_rules: {
+        Row: {
+          algorithm: string | null
+          calendar_type: string | null
+          created_at: string
+          day: number | null
+          event_id: string
+          frequency: string | null
+          id: string
+          interval: number | null
+          month: number | null
+          operations: string[] | null
+          relative_event_id: string | null
+          rule_type: string | null
+          updated_at: string
+          week_of_month: number | null
+          weekday: number | null
+        }
+        Insert: {
+          algorithm?: string | null
+          calendar_type?: string | null
+          created_at?: string
+          day?: number | null
+          event_id: string
+          frequency?: string | null
+          id?: string
+          interval?: number | null
+          month?: number | null
+          operations?: string[] | null
+          relative_event_id?: string | null
+          rule_type?: string | null
+          updated_at?: string
+          week_of_month?: number | null
+          weekday?: number | null
+        }
+        Update: {
+          algorithm?: string | null
+          calendar_type?: string | null
+          created_at?: string
+          day?: number | null
+          event_id?: string
+          frequency?: string | null
+          id?: string
+          interval?: number | null
+          month?: number | null
+          operations?: string[] | null
+          relative_event_id?: string | null
+          rule_type?: string | null
+          updated_at?: string
+          week_of_month?: number | null
+          weekday?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_date_rules_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: true
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_date_rules_relative_event_id_fkey"
+            columns: ["relative_event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      event_occurrences: {
+        Row: {
+          created_at: string
+          event_id: string
+          id: string
+          occurs_on: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          id?: string
+          occurs_on?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          id?: string
+          occurs_on?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_occurrences_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          created_at: string
+          deleted_at: string | null
+          id: string
+          long_description: string | null
+          short_description: string | null
+          title: string
+          updated_at: string
+          user_id: string | null
+          visibility: string
+        }
+        Insert: {
+          created_at?: string
+          deleted_at?: string | null
+          id?: string
+          long_description?: string | null
+          short_description?: string | null
+          title: string
+          updated_at?: string
+          user_id?: string | null
+          visibility?: string
+        }
+        Update: {
+          created_at?: string
+          deleted_at?: string | null
+          id?: string
+          long_description?: string | null
+          short_description?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string | null
+          visibility?: string
+        }
+        Relationships: []
+      }
       tradition_date_rules: {
         Row: {
           algorithm: string | null
@@ -140,24 +277,40 @@ export type Database = {
           created_at: string
           description: string
           id: string
+          parent_step_id: string | null
           sort_order: number
+          step_type: string
           tradition_id: string
+          user_id: string | null
         }
         Insert: {
           created_at?: string
           description: string
           id?: string
+          parent_step_id?: string | null
           sort_order: number
+          step_type?: string
           tradition_id: string
+          user_id?: string | null
         }
         Update: {
           created_at?: string
           description?: string
           id?: string
+          parent_step_id?: string | null
           sort_order?: number
+          step_type?: string
           tradition_id?: string
+          user_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "tradition_prep_steps_parent_step_id_fkey"
+            columns: ["parent_step_id"]
+            isOneToOne: false
+            referencedRelation: "tradition_prep_steps"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "tradition_prep_steps_tradition_id_fkey"
             columns: ["tradition_id"]
@@ -174,11 +327,11 @@ export type Database = {
           id: string
           long_description: string | null
           notes: string | null
+          parent_tradition_id: string | null
           short_description: string | null
           title: string
           updated_at: string
           user_id: string | null
-          version: number | null
           visibility: string
         }
         Insert: {
@@ -187,11 +340,11 @@ export type Database = {
           id?: string
           long_description?: string | null
           notes?: string | null
+          parent_tradition_id?: string | null
           short_description?: string | null
           title: string
           updated_at?: string
           user_id?: string | null
-          version?: number | null
           visibility?: string
         }
         Update: {
@@ -200,42 +353,50 @@ export type Database = {
           id?: string
           long_description?: string | null
           notes?: string | null
+          parent_tradition_id?: string | null
           short_description?: string | null
           title?: string
           updated_at?: string
           user_id?: string | null
-          version?: number | null
           visibility?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "traditions_parent_tradition_id_fkey"
+            columns: ["parent_tradition_id"]
+            isOneToOne: false
+            referencedRelation: "traditions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_steps_complete: {
         Row: {
-          completed_at: string | null
           created_at: string
           id: string
-          is_completed: boolean
+          is_complete: boolean
           occurrence_id: string
+          step_id: string
           updated_at: string
-          user_step_id: string
+          user_id: string
         }
         Insert: {
-          completed_at?: string | null
           created_at?: string
           id?: string
-          is_completed?: boolean
+          is_complete?: boolean
           occurrence_id: string
+          step_id: string
           updated_at?: string
-          user_step_id: string
+          user_id?: string
         }
         Update: {
-          completed_at?: string | null
           created_at?: string
           id?: string
-          is_completed?: boolean
+          is_complete?: boolean
           occurrence_id?: string
+          step_id?: string
           updated_at?: string
-          user_step_id?: string
+          user_id?: string
         }
         Relationships: [
           {
@@ -246,62 +407,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "user_steps_complete_user_step_id_fkey"
-            columns: ["user_step_id"]
-            isOneToOne: false
-            referencedRelation: "user_tradition_prep_steps"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      user_tradition_prep_steps: {
-        Row: {
-          created_at: string
-          custom_description: string | null
-          id: string
-          is_removed: boolean
-          sort_order: number
-          tradition_prep_step_id: string | null
-          user_tradition_id: string
-        }
-        Insert: {
-          created_at?: string
-          custom_description?: string | null
-          id?: string
-          is_removed?: boolean
-          sort_order: number
-          tradition_prep_step_id?: string | null
-          user_tradition_id: string
-        }
-        Update: {
-          created_at?: string
-          custom_description?: string | null
-          id?: string
-          is_removed?: boolean
-          sort_order?: number
-          tradition_prep_step_id?: string | null
-          user_tradition_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "user_tradition_prep_steps_tradition_prep_step_id_fkey"
-            columns: ["tradition_prep_step_id"]
+            foreignKeyName: "user_steps_complete_step_id_fkey"
+            columns: ["step_id"]
             isOneToOne: false
             referencedRelation: "tradition_prep_steps"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "user_tradition_prep_steps_user_tradition_id_fkey"
-            columns: ["user_tradition_id"]
-            isOneToOne: false
-            referencedRelation: "user_traditions"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "user_tradition_prep_steps_user_tradition_id_fkey1"
-            columns: ["user_tradition_id"]
-            isOneToOne: false
-            referencedRelation: "user_traditions"
             referencedColumns: ["id"]
           },
         ]
@@ -311,7 +420,6 @@ export type Database = {
           created_at: string | null
           id: string
           notification_time: string | null
-          parent_tradition_id: string | null
           reminders_enabled: boolean
           tradition_id: string | null
           user_id: string
@@ -320,7 +428,6 @@ export type Database = {
           created_at?: string | null
           id?: string
           notification_time?: string | null
-          parent_tradition_id?: string | null
           reminders_enabled?: boolean
           tradition_id?: string | null
           user_id?: string
@@ -329,19 +436,11 @@ export type Database = {
           created_at?: string | null
           id?: string
           notification_time?: string | null
-          parent_tradition_id?: string | null
           reminders_enabled?: boolean
           tradition_id?: string | null
           user_id?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "user_traditions_parent_tradition_id_fkey"
-            columns: ["parent_tradition_id"]
-            isOneToOne: false
-            referencedRelation: "traditions"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "user_traditions_tradition_id_fkey"
             columns: ["tradition_id"]

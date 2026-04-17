@@ -12,6 +12,7 @@ npx supabase db lint
 
 npx supabase functions new hello-world
 npx supabase functions serve name
+npx supabase functions delete name
 
 npx supabase gen types typescript --local > database.types.ts
 

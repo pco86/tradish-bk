@@ -6,6 +6,6 @@
 
 -- insert into tradition_occurrences (tradition_id, occurs_on) values ('4306b52f-d729-44d8-b5d6-b2e972b05cc0', '2026-04-22')
 
-select * from tradition_occurrences where tradition_id = '4306b52f-d729-44d8-b5d6-b2e972b05cc0';
+-- select * from tradition_occurrences where tradition_id = '4306b52f-d729-44d8-b5d6-b2e972b05cc0';
 
 -- select * from tradition_occurrences;

@@ -1,15 +1,17 @@
 CREATE TABLE
     tradition_prep_steps (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid (),
+        parent_step_id UUID,
         tradition_id UUID NOT NULL,
-        user_id UUID REFERENCES auth.users (id) ON DELETE SET NULL DEFAULT auth.uid (),
         FOREIGN KEY (tradition_id) REFERENCES traditions (id) ON DELETE CASCADE,
+        user_id UUID REFERENCES auth.users (id) ON DELETE SET NULL DEFAULT auth.uid (),
         -- title text not null,
         description TEXT NOT NULL,
         -- offset_days integer not null,
         sort_order INTEGER NOT NULL,
         step_type TEXT NOT NULL CHECK (step_type IN ('default', 'custom')) DEFAULT 'custom',
-        created_at timestamptz NOT NULL DEFAULT NOW()
+        created_at timestamptz NOT NULL DEFAULT NOW(),
+        FOREIGN KEY (parent_step_id) REFERENCES tradition_prep_steps (id) ON DELETE SET NULL
     );
 
 ALTER TABLE public.tradition_prep_steps ENABLE ROW LEVEL SECURITY;

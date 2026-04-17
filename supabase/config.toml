@@ -383,16 +383,16 @@ s3_access_key = "env(S3_ACCESS_KEY)"
 # Configures AWS_SECRET_ACCESS_KEY for S3 bucket
 s3_secret_key = "env(S3_SECRET_KEY)"
 
-[functions.create_occurrences]
-enabled = true
-verify_jwt = true
-import_map = "./functions/create_occurrences/deno.json"
-# Uncomment to specify a custom file path to the entrypoint.
-# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
-entrypoint = "./functions/create_occurrences/index.ts"
-# Specifies static files to be bundled with the function. Supports glob patterns.
-# For example, if you want to serve static HTML pages in your function:
-# static_files = [ "./functions/create_occurrences/*.html" ]
+# [functions.create_occurrences]
+# enabled = true
+# verify_jwt = true
+# import_map = "./functions/create_occurrences/deno.json"
+# # Uncomment to specify a custom file path to the entrypoint.
+# # Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+# entrypoint = "./functions/create_occurrences/index.ts"
+# # Specifies static files to be bundled with the function. Supports glob patterns.
+# # For example, if you want to serve static HTML pages in your function:
+# # static_files = [ "./functions/create_occurrences/*.html" ]
 
 [functions.add-occurrence-new-tradition]
 enabled = true
@@ -405,16 +405,16 @@ entrypoint = "./functions/add-occurrence-new-tradition/index.ts"
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/add-occurrence-new-tradition/*.html" ]
 
-[functions.hello-webhook]
-enabled = true
-verify_jwt = false
-import_map = "./functions/hello-webhook/deno.json"
-# Uncomment to specify a custom file path to the entrypoint.
-# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
-entrypoint = "./functions/hello-webhook/index.ts"
-# Specifies static files to be bundled with the function. Supports glob patterns.
-# For example, if you want to serve static HTML pages in your function:
-# static_files = [ "./functions/hello-webhook/*.html" ]
+# [functions.hello-webhook]
+# enabled = true
+# verify_jwt = false
+# import_map = "./functions/hello-webhook/deno.json"
+# # Uncomment to specify a custom file path to the entrypoint.
+# # Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+# entrypoint = "./functions/hello-webhook/index.ts"
+# # Specifies static files to be bundled with the function. Supports glob patterns.
+# # For example, if you want to serve static HTML pages in your function:
+# # static_files = [ "./functions/hello-webhook/*.html" ]
 
 [functions.schedule-occurrence-materialization]
 enabled = true
@@ -427,13 +427,24 @@ entrypoint = "./functions/schedule-occurrence-materialization/index.ts"
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/schedule-occurrence-materialization/*.html" ]
 
-[functions.update-occurrences]
+# [functions.update-occurrences]
+# enabled = true
+# verify_jwt = true
+# import_map = "./functions/update-occurrences/deno.json"
+# # Uncomment to specify a custom file path to the entrypoint.
+# # Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+# entrypoint = "./functions/update-occurrences/index.ts"
+# # Specifies static files to be bundled with the function. Supports glob patterns.
+# # For example, if you want to serve static HTML pages in your function:
+# # static_files = [ "./functions/update-occurrences/*.html" ]
+
+[functions.add-occurrences-new-event]
 enabled = true
-verify_jwt = true
-import_map = "./functions/update-occurrences/deno.json"
+verify_jwt = false
+import_map = "./functions/add-occurrences-new-event/deno.json"
 # Uncomment to specify a custom file path to the entrypoint.
 # Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
-entrypoint = "./functions/update-occurrences/index.ts"
+entrypoint = "./functions/add-occurrences-new-event/index.ts"
 # Specifies static files to be bundled with the function. Supports glob patterns.
 # For example, if you want to serve static HTML pages in your function:
-# static_files = [ "./functions/update-occurrences/*.html" ]
+# static_files = [ "./functions/add-occurrences-new-event/*.html" ]
