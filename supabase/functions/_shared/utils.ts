@@ -1,20 +1,45 @@
 import { easter } from "@date-easter";
-import { getEventRuleById, getTraditionById } from "./query.ts";
-import { Tables } from "../../../database.types.ts";
+import {
+  getEventRuleById,
+  getTraditionById,
+  resloveBaseFrequency,
+  resloveTraditionBaseFrequency,
+} from "./query.ts";
+import {
+  AlgorithmTypes,
+  DateRuleSchema,
+  EventOperationsArraySchema,
+  EventOperationsType,
+} from "./schemas.ts";
+
+function assertNever(x: never): never {
+  throw new Error(`Unexpected object: ${x}`);
+}
 
 export const resolveFixed = (
-  rule: Tables<"tradition_date_rules"> | Tables<"event_date_rules">,
+  config: { month: number; day: number },
   fromDate: Date,
 ) => {
   const year = fromDate.getFullYear();
-  if (rule.month === null || rule.day === null) {
-    console.error(
-      `Create Occurrence Edge Function: Fixed date does not have a month or day.`,
-    );
-    return null;
-  }
-  const date = new Date(year, rule.month, rule.day);
+  const date = new Date(year, config.month, config.day);
   return date;
+};
+
+export const resolveWeekly = (
+  config: { weekday: number },
+  fromDate: Date,
+) => {
+  const resultDate = new Date(fromDate.getTime());
+  const currentWeekday = fromDate.getDay();
+
+  const daysRemaining = config.weekday - currentWeekday;
+
+  if (daysRemaining <= 0) {
+    resultDate.setDate(resultDate.getDate() + daysRemaining + 7);
+    return resultDate;
+  }
+  resultDate.setDate(resultDate.getDate() + daysRemaining);
+  return resultDate;
 };
 
 const easterWestern = (year: number) => {
@@ -23,29 +48,20 @@ const easterWestern = (year: number) => {
   return date;
 };
 
-type ComputedRuleHandler = (date: Date) => Date;
-
-const computedRuleHandler: Record<string, ComputedRuleHandler> = {
-  "easter-western": (date) => {
-    const year = date.getFullYear();
-    return easterWestern(year);
-  },
-};
-
 export const resolveComputed = (
-  rule: Tables<"tradition_date_rules"> | Tables<"event_date_rules">,
+  config: AlgorithmTypes,
   date: Date,
 ) => {
-  const handler = computedRuleHandler[rule.algorithm ? rule.algorithm : ""];
-
-  if (!handler) {
-    console.error(
-      `Create Occurrence Edge Function: Unknown operation: ${name}`,
-    );
-    return null;
+  switch (config.algorithm) {
+    case "easter-western":
+      return easterWestern(date.getFullYear());
+    case "temp-union-param":
+      return date;
+    default:
+      // If a new type is added to the schema but not handled here,
+      // TypeScript will flag a compile error on this line.
+      return assertNever(config);
   }
-
-  return handler(date);
 };
 
 export const getRuleForTradition = async (traditionId: string) => {
@@ -59,6 +75,37 @@ export const getRuleForTradition = async (traditionId: string) => {
   }
 
   return rule.tradition_date_rules;
+};
+
+export const getEventRuleForTradition = async (eventId: string) => {
+  const rule = await getEventRuleById(eventId);
+
+  if (rule instanceof Response || rule === null) {
+    console.error(
+      `Create Occurrence Edge Function: Get Tradition By ID response error.`,
+    );
+    return null;
+  }
+
+  return rule;
+};
+
+export const checkRelativeFrequency = async (
+  eventId: string,
+  frequency: string | null,
+) => {
+  if (frequency != null) return frequency;
+
+  const baseFrequency = await resloveBaseFrequency(eventId);
+
+  if (baseFrequency instanceof Response || baseFrequency === null) {
+    console.error(
+      `Create Occurrence Edge Function: Get Tradition By ID response error.`,
+    );
+    return null;
+  }
+
+  return baseFrequency;
 };
 
 export const getRuleForEvent = async (eventId: string) => {
@@ -162,196 +209,150 @@ const nthWeekdayOfMonth = (
   return result;
 };
 
-type OperationHandler = (date: Date, args: string[]) => Date;
-
-const operationHandlers: Record<string, OperationHandler> = {
-  "previous-weekday": (date, args) => {
-    const targetDay = parseInt(args[0]);
-    return previousWeekday(date, targetDay);
-  },
-  "previous-weekday-strict": (date, args) => {
-    const targetDay = parseInt(args[0]);
-    return previousWeekdayStrict(date, targetDay);
-  },
-  "next-weekday": (date, args) => {
-    const targetDay = parseInt(args[0]);
-    return nextWeekday(date, targetDay);
-  },
-  "next-weekday-strict": (date, args) => {
-    const targetDay = parseInt(args[0]);
-    return nextWeekdayStrict(date, targetDay);
-  },
-  "offset-days": (date, args) => {
-    const days = parseInt(args[0]);
-    return addDays(date, days);
-  },
-  "offset-weeks": (date, args) => {
-    const weeks = parseInt(args[0]);
-    return addDays(date, weeks * 7);
-  },
-  "nth-weekday-of-month": (date, args) => {
-    const [month, weekday, n] = args.map(Number);
-    return nthWeekdayOfMonth(date.getFullYear(), month, weekday, n);
-  },
-};
-
-export const applyOperation = (date: Date, op: string) => {
-  const [name, argString] = op.split(":");
-  const handler = operationHandlers[name];
-
-  if (!handler) {
-    console.error(
-      `Create Occurrence Edge Function: Unknown operation: ${name}`,
-    );
-    return;
+function operationHandler(date: Date, operation: EventOperationsType) {
+  switch (operation.type) {
+    case "previous-weekday":
+      return previousWeekday(date, operation.config.weekday);
+    case "next-weekday":
+      return nextWeekday(date, operation.config.weekday);
+    case "previous-weekday-strict":
+      return previousWeekdayStrict(date, operation.config.weekday);
+    case "next-weekday-strict":
+      return nextWeekdayStrict(date, operation.config.weekday);
+    case "offset-days":
+      return addDays(date, operation.config.amount);
+    case "offset-weeks":
+      return addDays(date, operation.config.amount * 7);
+    case "nth-weekday-of-month":
+      return nthWeekdayOfMonth(
+        date.getFullYear(),
+        operation.config.month,
+        operation.config.weekday,
+        operation.config.occurrence,
+      );
+    default:
+      // If a new type is added to the schema but not handled here,
+      // TypeScript will flag a compile error on this line.
+      return assertNever(operation);
   }
-
-  const args = argString ? argString.split(",") : [];
-  return handler(date, args);
-};
+}
 
 export const resolveEventRule = async (
-  rule: Tables<"event_date_rules">,
+  event_id: string | null,
+  relative_event_id: string | null,
+  rule_type: string | null,
+  rawRuleConfig: unknown,
+  rawOperations: unknown,
   fromDate: Date,
   visited: Set<string>,
 ): Promise<Date | null> => {
-  if (visited.has(rule.event_id)) {
+  if (event_id === null) {
+    console.error("Event id is null.");
+    return null;
+  }
+  if (visited.has(event_id)) {
     console.error(
-      `Create Occurrence Edge Function: Circular event dependency detected: ${rule.event_id}`,
+      `Create Occurrence Edge Function: Circular event dependency detected: ${event_id}`,
     );
   }
+  const result = DateRuleSchema.safeParse({
+    type: rule_type,
+    config: rawRuleConfig,
+  });
 
-  visited.add(rule.event_id);
+  if (!result.success) {
+    console.error("Rule configuration validation failed");
+    return null;
+  }
+
+  const dateRule = result.data;
+
+  visited.add(event_id);
 
   let date: Date | null;
 
-  switch (rule.rule_type) {
+  switch (dateRule.type) {
     case "fixed":
-      date = resolveFixed(rule, fromDate);
+      date = resolveFixed(dateRule.config, fromDate);
       break;
 
     case "computed":
-      date = resolveComputed(rule, fromDate);
+      date = resolveComputed(dateRule.config, fromDate);
+      break;
+
+    case "weekly":
+      date = resolveWeekly(dateRule.config, fromDate);
       break;
 
     case "relative": {
-      if (!rule.relative_event_id) {
+      if (!relative_event_id) {
         console.error(
-          `Create Occurrences: Relative rule missing for this event's rule: ${rule.event_id}`,
+          `Create Occurrences: Relative rule missing for this event's rule: ${event_id}`,
         );
         date = null;
         break;
       }
       const relativeRule = await getRuleForEvent(
-        rule.relative_event_id,
+        relative_event_id,
       );
       if (relativeRule === null) return null;
       date = await resolveEventRule(
-        relativeRule,
+        relativeRule.event_id,
+        relativeRule.relative_event_id,
+        relativeRule.rule_type,
+        relativeRule.config,
+        relativeRule.event_operations,
         fromDate,
         visited,
       );
       break;
     }
-
     default:
-      console.error(`Create Occurrences: Unknown rule_type: ${rule.rule_type}`);
-      date = null;
+      // If a new type is added to the schema but not handled here,
+      // TypeScript will flag a compile error on this line.
+      return assertNever(dateRule);
   }
 
   if (date === null) return null;
 
-  for (const op of rule.operations ?? []) {
-    if (date === null) continue;
-    const newDate = applyOperation(date, op);
-    if (newDate instanceof Date) date = newDate;
-  }
+  const validateOperations = EventOperationsArraySchema.safeParse(
+    rawOperations,
+  );
 
-  visited.delete(rule.event_id);
-
-  return date;
-};
-
-export const resolveRule = async (
-  rule: Tables<"tradition_date_rules">,
-  fromDate: Date,
-  visited: Set<string>,
-): Promise<Date | null> => {
-  if (visited.has(rule.tradition_id)) {
-    console.error(
-      `Create Occurrence Edge Function: Circular tradition dependency detected: ${rule.tradition_id}`,
+  if (validateOperations.success) {
+    const operations = validateOperations.data.toSorted((a, b) =>
+      a.sort_order - b.sort_order
     );
-  }
-
-  visited.add(rule.tradition_id);
-
-  let date: Date | null;
-
-  switch (rule.rule_type) {
-    case "fixed":
-      date = resolveFixed(rule, fromDate);
-      break;
-
-    case "computed":
-      date = resolveComputed(rule, fromDate);
-      break;
-
-    case "relative": {
-      if (!rule.relative_tradition_id) {
-        console.error(
-          `Create Occurrences: Relative rule missing for this tradition's rule: ${rule.tradition_id}`,
-        );
-        date = null;
-        break;
-      }
-      const relativeRule = await getRuleForTradition(
-        rule.relative_tradition_id,
-      );
-      if (relativeRule === null) return null;
-      date = await resolveRule(
-        relativeRule,
-        fromDate,
-        visited,
-      );
-      break;
+    for (const op of operations) {
+      if (date === null) continue;
+      const newDate = operationHandler(date, op);
+      if (newDate instanceof Date) date = newDate;
     }
-
-    default:
-      console.error(`Create Occurrences: Unknown rule_type: ${rule.rule_type}`);
-      date = null;
   }
 
-  if (date === null) return null;
-
-  for (const op of rule.operations ?? []) {
-    if (date === null) continue;
-    const newDate = applyOperation(date, op);
-    if (newDate instanceof Date) date = newDate;
-  }
-
-  visited.delete(rule.tradition_id);
+  visited.delete(event_id);
 
   return date;
 };
 
 function advanceByFrequency(
   date: Date,
-  rule: Tables<"tradition_date_rules"> | Tables<"event_date_rules">,
+  frequency: string,
   count: number,
 ) {
   const d = new Date(date);
 
-  switch (rule.frequency) {
+  switch (frequency) {
     case "weekly":
-      d.setDate(d.getDate() + 7 * (rule.interval ?? 1) * count);
+      d.setDate(d.getDate() + 7 * count);
       break;
 
     case "monthly":
-      d.setMonth(d.getMonth() + (rule.interval ?? 1) * count);
+      d.setMonth(d.getMonth() + count);
       break;
 
     case "yearly":
-      d.setFullYear(d.getFullYear() + (rule.interval ?? 1) * count);
+      d.setFullYear(d.getFullYear() + count);
       break;
 
     default:
@@ -362,40 +363,43 @@ function advanceByFrequency(
   return d;
 }
 
-export async function materializeOccurrences(
-  rule: Tables<"tradition_date_rules">,
+export async function materializeEventOccurrences(
+  frequency: string | null,
+  event_id: string | null,
+  relative_event_id: string | null,
+  rule_type: string | null,
+  ruleConfig: unknown,
+  rawOperations: unknown,
   fromDate: Date,
   count: number,
 ) {
-  const occurrences = [];
+  const occurrences: string[] = [];
 
-  for (let i = 0; i < count; i++) {
-    const nextDate = advanceByFrequency(fromDate, rule, i);
-
-    const traditionDate = await resolveRule(
-      rule,
-      nextDate,
-      new Set<string>(),
-    );
-    if (traditionDate === null) continue;
-    occurrences.push(traditionDate.toISOString().slice(0, 10));
+  if (event_id === null) {
+    console.error("Event id is null.");
+    return null;
   }
 
-  return occurrences;
-}
+  const resolvedFrequency = await checkRelativeFrequency(event_id, frequency);
 
-export async function materializeEventOccurrences(
-  rule: Tables<"event_date_rules">,
-  fromDate: Date,
-  count: number,
-) {
-  const occurrences = [];
+  if (resolvedFrequency === null) {
+    console.error("Could not resolve frequency for ", event_id);
+    return null;
+  }
 
   for (let i = 0; i < count; i++) {
-    const nextDate = advanceByFrequency(fromDate, rule, i);
+    const nextDate = advanceByFrequency(
+      fromDate,
+      resolvedFrequency,
+      i,
+    );
 
     const eventDate = await resolveEventRule(
-      rule,
+      event_id,
+      relative_event_id,
+      rule_type,
+      ruleConfig,
+      rawOperations,
       nextDate,
       new Set<string>(),
     );
@@ -417,8 +421,8 @@ export const helperFns = {
    * @returns
    */
   processDissimilarStringArrays(
-    arr1: string[] | undefined,
-    arr2: string[] | undefined,
+    arr1: string[] | undefined | null,
+    arr2: string[] | undefined | null,
   ) {
     // Ensure inputs are arrays or default to empty arrays
     arr1 = Array.isArray(arr1) ? arr1 : [];

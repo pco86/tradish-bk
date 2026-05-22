@@ -5,11 +5,15 @@
 // Setup type definitions for built-in Supabase Runtime APIs
 import "@supabase/functions-js/edge-runtime.d.ts";
 import { Tables } from "../../../database.types.ts";
-import { materializeOccurrences } from "../_shared/utils.ts";
+import { materializeEventOccurrences } from "../_shared/utils.ts";
 import {
   deleteTraditionOccurrences,
   upsertTraditionOccurrences,
 } from "../_shared/mutation.ts";
+import {
+  getTraditionRuleSetById,
+  resloveTraditionBaseFrequency,
+} from "../_shared/query.ts";
 
 Deno.serve(async (req) => {
   const auth = req.headers.get("x-webhook-secret");
@@ -20,26 +24,68 @@ Deno.serve(async (req) => {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const tradition_date_rules: Tables<"tradition_date_rules"> = await req.json();
+  const newTradition: Tables<"traditions"> = await req.json();
+
+  const tradition = await getTraditionRuleSetById(newTradition.id);
+
+  if (tradition instanceof Response) {
+    console.error(tradition);
+    return new Response(
+      JSON.stringify(tradition),
+      { headers: { "Content-Type": "application/json" } },
+    );
+  }
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  if (tradition_date_rules === null) {
-    console.error(`Missing tradition rule`);
+  if (tradition === null || tradition.event_id === null) {
+    console.error(`Missing tradition rule or event id on ${newTradition.id}`);
     return new Response("Missing Tradition Rule.");
   }
-  const occurrenceDates = await materializeOccurrences(
-    tradition_date_rules,
+
+  const resolvedFrequency = await resloveTraditionBaseFrequency(
+    newTradition.id,
+  );
+
+  if (resolvedFrequency instanceof Response || resolvedFrequency === null) {
+    console.error(
+      `Create Occurrence Edge Function: Get Tradition By ID response error.`,
+    );
+    return new Response(
+      JSON.stringify(resolvedFrequency),
+      { headers: { "Content-Type": "application/json" } },
+    );
+  }
+
+  const occurrenceDates = await materializeEventOccurrences(
+    resolvedFrequency,
+    tradition.tradition_id,
+    tradition.event_id,
+    "relative",
+    null,
+    tradition.tradition_operations,
     today,
     4,
   );
 
-  await deleteTraditionOccurrences(tradition_date_rules.tradition_id);
+  if (occurrenceDates === undefined) {
+    console.error("Occurrence Dates were not properly generated");
+    return new Response("Occurrence Dates were not properly generated");
+  }
+
+  if (occurrenceDates === null) {
+    console.error(`Unable to generate occurrence dates for ${newTradition.id}`);
+    return new Response(
+      `Unable to generate occurrence dates for ${newTradition.id}`,
+    );
+  }
+
+  await deleteTraditionOccurrences(newTradition.id);
 
   const occurrences: { tradition_id: string; occurs_on: string }[] =
     occurrenceDates.map((date) => ({
-      tradition_id: tradition_date_rules.tradition_id,
+      tradition_id: newTradition.id,
       occurs_on: date,
     }));
 

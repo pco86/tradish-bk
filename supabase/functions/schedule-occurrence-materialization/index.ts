@@ -4,58 +4,70 @@
 
 // Setup type definitions for built-in Supabase Runtime APIs
 import "@supabase/functions-js/edge-runtime.d.ts";
-import {
-  helperFns,
-  materializeEventOccurrences,
-  materializeOccurrences,
-} from "../_shared/utils.ts";
+import { helperFns, materializeEventOccurrences } from "../_shared/utils.ts";
 import {
   addEventOccurrences,
   addTraditionOccurrences,
 } from "../_shared/mutation.ts";
-import { getEventSet, getTraditionSet } from "../_shared/query.ts";
+import {
+  getEventDateRuleSet,
+  getTraditionSet,
+  resloveTraditionBaseFrequency,
+} from "../_shared/query.ts";
+import { occursOn } from "../_shared/schemas.ts";
 
 Deno.serve(async () => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const todayIso = today.toISOString().slice(0, 10);
 
   let eventLastId = null;
 
   while (true) {
     const event_occurrences: { event_id: string; occurs_on: string }[] = [];
-    const data = await getEventSet(100, eventLastId, todayIso);
+    const data = await getEventDateRuleSet(100, eventLastId);
 
     if (data instanceof Response) {
-      console.log(data);
+      console.error(data);
       break;
     }
 
     if (!data.length) break;
 
     for (const event of data) {
-      eventLastId = event.id;
-      if (event.event_occurrences.length >= 4) continue;
-      if (event.event_date_rules === null) {
-        console.error(`Missing tradition rule for ${event.id}`);
+      eventLastId = event.event_id;
+      const getOccurences = occursOn.safeParse(event.occurrences);
+      if (getOccurences.success && getOccurences.data.length >= 4) continue;
+      if (event.id === null) {
+        console.error(`Missing event rule for ${event.event_id}`);
         continue;
       }
+      if (event.event_id === null) {
+        console.error(`Missing event id`);
+        continue;
+      }
+
       const occurrenceDates = await materializeEventOccurrences(
-        event.event_date_rules,
+        event.frequency,
+        event.event_id,
+        event.relative_event_id,
+        event.rule_type,
+        event.config,
+        event.event_operations,
         today,
         4,
       );
-      const existingDates = event.event_occurrences.map((item) =>
-        item.occurs_on ? item.occurs_on : ""
-      );
+      const existingDates = getOccurences.success
+        ? getOccurences.data.map((item) => item.occurs_on ? item.occurs_on : "")
+        : [];
       const newDates = helperFns.processDissimilarStringArrays(
         occurrenceDates,
         existingDates,
       );
       if (newDates.length === 0) continue;
+      const eventId = event.event_id;
       newDates.forEach(
         (date) => {
-          event_occurrences.push({ event_id: event.id, occurs_on: date });
+          event_occurrences.push({ event_id: eventId, occurs_on: date });
         },
       );
     }
@@ -66,7 +78,7 @@ Deno.serve(async () => {
 
   while (true) {
     const occurrences: { tradition_id: string; occurs_on: string }[] = [];
-    const data = await getTraditionSet(100, lastId, todayIso);
+    const data = await getTraditionSet(100, lastId);
 
     if (data instanceof Response) {
       console.log(data);
@@ -76,28 +88,56 @@ Deno.serve(async () => {
     if (!data.length) break;
 
     for (const tradition of data) {
-      lastId = tradition.id;
-      if (tradition.tradition_occurrences.length >= 4) continue;
-      if (tradition.tradition_date_rules === null) {
-        console.error(`Missing tradition rule for ${tradition.id}`);
+      lastId = tradition.tradition_id;
+      const getOccurences = occursOn.safeParse(tradition.occurrences);
+
+      if (getOccurences.success && getOccurences.data.length >= 4) continue;
+      if (tradition.tradition_id === null) {
+        console.error(
+          `Missing event id for tradition with id: ${tradition.event_id}`,
+        );
         continue;
       }
-      const occurrenceDates = await materializeOccurrences(
-        tradition.tradition_date_rules,
+      const resolvedFrequency = await resloveTraditionBaseFrequency(
+        tradition.tradition_id,
+      );
+
+      if (resolvedFrequency instanceof Response || resolvedFrequency === null) {
+        console.error(
+          `Create Occurrence Edge Function: Get Tradition By ID response error.`,
+        );
+        return new Response(
+          JSON.stringify(resolvedFrequency),
+          { headers: { "Content-Type": "application/json" } },
+        );
+      }
+
+      const occurrenceDates = await materializeEventOccurrences(
+        resolvedFrequency,
+        tradition.tradition_id,
+        tradition.event_id,
+        "relative",
+        null,
+        tradition.tradition_operations,
         today,
         4,
       );
-      const existingDates = tradition.tradition_occurrences.map((item) =>
-        item.occurs_on ? item.occurs_on : ""
-      );
+      const existingDates = getOccurences.success
+        ? getOccurences.data.map((item) => item.occurs_on ? item.occurs_on : "")
+        : [];
       const newDates = helperFns.processDissimilarStringArrays(
         occurrenceDates,
         existingDates,
       );
       if (newDates.length === 0) continue;
+      const traditionId = tradition.tradition_id;
+
       newDates.forEach(
         (date) => {
-          occurrences.push({ tradition_id: tradition.id, occurs_on: date });
+          occurrences.push({
+            tradition_id: traditionId,
+            occurs_on: date,
+          });
         },
       );
     }

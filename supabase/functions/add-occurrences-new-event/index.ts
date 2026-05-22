@@ -10,6 +10,7 @@ import {
   deleteEventOccurrences,
   upsertEventOccurrences,
 } from "../_shared/mutation.ts";
+import { getEventDateRuleSetById } from "../_shared/query.ts";
 
 Deno.serve(async (req) => {
   const auth = req.headers.get("x-webhook-secret");
@@ -22,6 +23,16 @@ Deno.serve(async (req) => {
 
   const event_date_rules: Tables<"event_date_rules"> = await req.json();
 
+  const event = await getEventDateRuleSetById(event_date_rules.event_id);
+
+  if (event instanceof Response) {
+    console.error(event);
+    return new Response(
+      JSON.stringify(event),
+      { headers: { "Content-Type": "application/json" } },
+    );
+  }
+
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
@@ -30,10 +41,21 @@ Deno.serve(async (req) => {
     return new Response("Missing Event Rule.");
   }
   const occurrenceDates = await materializeEventOccurrences(
-    event_date_rules,
+    event.frequency,
+    event.event_id,
+    event.relative_event_id,
+    event.rule_type,
+    event.config,
+    event.event_operations,
     today,
     4,
   );
+  if (occurrenceDates === null) {
+    console.error(`Unable to generate occurrence dates for ${event.event_id}`);
+    return new Response(
+      `Unable to generate occurrence dates for ${event.event_id}`,
+    );
+  }
 
   await deleteEventOccurrences(event_date_rules.event_id);
 
